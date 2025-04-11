@@ -150,15 +150,15 @@ const showAnswersForm =  () => {
 
 /**
  * Funzione che controlla i valori inseriti dall'utente
- * @param {event} e Evento submit per cui prevenire il comportamento di default che ricarica la pagina
  */
-const checkAnswer =  (e) => {
-    e.preventDefault();
+const checkAnswer =  () => {
     // console.debug(answerInputs);
 
     const correctGuesses = [];
 
     answerInputs.forEach(input => {
+        // console.debug(input.value);
+        // console.debug(input.value.length);
         const currentValue = parseInt(input.value);
         // console.debug(currentValue);
         const isCorrect = checkNumber(currentValue);
@@ -177,8 +177,7 @@ const checkAnswer =  (e) => {
  * @returns {boolean} Valore che indica se il numero è presente nella combinazione iniziale
  */
 const checkNumber =  (number) => {
-    console.debug(number);
-
+    // console.debug(number);
     return numbers.includes(number);
 };
 
@@ -204,12 +203,50 @@ I numeri da ricordare erano: ${showNumbersString(numbers)}`);
 
 
 
+/**
+ * Funzione che riceve un array di numeri da mostrare sotto forma di stringa all'interno di un messaggio
+ * @param {Array<number>} numbersToShow Lista di numeri da inserire nel messaggio. Possono essere i numeri da ricordare o i numeri ricordati correttamente
+ * @returns {string} La stringa generata che contiene i numeri da mostrare
+ */
 const showNumbersString =  (numbersToShow) => {
     let string = "";
     numbersToShow.forEach(number => {
         string.length === 0 ? string = number : string = `${string}, ${number}`
     })
     return string;
+};
+
+
+
+// todo: AGGIUNGERE LA VALIDAZIONE
+// ? COME IMPEDIRE LA VALIDAZIONE AUTOMATICA DEL BROWSER?
+// ? FORSE MODIFICANDO IL BOTTONE COME TYPE="BUTTON" E SPOSTANDO QUESTE AZIONI SUL LISTENER DI EVENTI "CLICK" DEL PULSANTE INVECE CHE SUL LISTENER "INPUT" DEL FORM
+const validateUserAnswer =  () => {
+    let isValid = true;
+    let answerValues = [];
+    let errorMSG = "";
+
+    answerInputs.forEach(input => {
+        console.debug(input);
+        console.debug(input.value);
+        console.debug(input.value.length);
+        console.debug(parseInt(input.value));
+
+        if (input.value.length === 0) {
+            console.debug("Input vuoto");
+            errorMSG += "Almeno un input è vuoto. Inserisci un numero in ciascun input.\n";
+            isValid = false;
+        };
+
+
+        answerValues.includes(parseInt(input.value)) === false ? answerValues.push(parseInt(input.value)) : errorMSG += `Il numero ${input.value} si ripete. Inserisci un numero diverso in ciascun input.\n`;
+    })
+
+    console.debug(messageElement);
+    console.debug(errorMSG);
+    if (isValid === false) messageElement.innerText = errorMSG;
+
+    return isValid;
 };
 
 
