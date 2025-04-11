@@ -153,6 +153,8 @@ const showAnswersForm =  () => {
  */
 const checkAnswer =  () => {
     // console.debug(answerInputs);
+    // * RIMUOVO EVENTUALI MESSAGGI DI ERRORE
+    messageElement.innerText = "";
 
     const correctGuesses = [];
 
@@ -224,28 +226,45 @@ const showNumbersString =  (numbersToShow) => {
 const validateUserAnswer =  () => {
     let isValid = true;
     let answerValues = [];
+    // messageElement.innerText = "";
     let errorMSG = "";
 
     answerInputs.forEach(input => {
-        console.debug(input);
-        console.debug(input.value);
-        console.debug(input.value.length);
-        console.debug(parseInt(input.value));
+        // console.debug(input);
+        // console.debug(input.value);
+        // console.debug(input.value.length);
+        // console.debug(parseInt(input.value));
 
         if (input.value.length === 0) {
-            console.debug("Input vuoto");
-            errorMSG += "Almeno un input è vuoto. Inserisci un numero in ciascun input.\n";
             isValid = false;
+            errorMSG += "Almeno un input è vuoto o contiene un valore non numerico. Inserisci un numero in ciascun input.\n";
+            input.classList.add('border-danger');
+            // input.value = minNumber;
+        } else if (parseInt(input.value) < minNumber) {
+            isValid = false;
+            errorMSG += `Il numero ${input.value} è minore del numero minimo: ${minNumber}. Inserisci un numero maggiore o uguale a ${minNumber}.\n`;
+            input.classList.add('border-danger');
+            // input.value = minNumber;
+        } else if (parseInt(input.value) > maxNumber) {
+            isValid = false;
+            errorMSG += `Il numero ${input.value} è maggiore del numero massimo: ${maxNumber}. Inserisci un numero minore o uguale a ${maxNumber}.\n`;
+            input.classList.add('border-danger');
+            // input.value = maxNumber;
+        } else if (answerValues.includes(parseInt(input.value)) === true) {
+            // answerValues.includes(parseInt(input.value)) === false ? answerValues.push(parseInt(input.value)) : errorMSG += `Il numero ${input.value} si ripete. Inserisci un numero diverso in ciascun input.\n`;
+            isValid = false;
+            errorMSG += `Il numero ${input.value} si ripete. Inserisci un numero diverso in ciascun input.\n`;
+            input.classList.add('border-danger');
+        } else {
+            if (input.classList.contains('border-danger')) input.classList.remove('border-danger');
+            answerValues.push(parseInt(input.value));
         };
-
-
-        answerValues.includes(parseInt(input.value)) === false ? answerValues.push(parseInt(input.value)) : errorMSG += `Il numero ${input.value} si ripete. Inserisci un numero diverso in ciascun input.\n`;
+        
     })
 
-    console.debug(messageElement);
-    console.debug(errorMSG);
+    // console.debug(messageElement);
+    // console.debug(errorMSG);
     if (isValid === false) messageElement.innerText = errorMSG;
-
     return isValid;
 };
 
