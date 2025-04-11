@@ -153,7 +153,7 @@ const showAnswersForm =  () => {
  */
 const checkAnswer =  () => {
     // console.debug(answerInputs);
-    // * RIMUOVO EVENTUALI MESSAGGI DI ERRORE
+    // * TEST 2: RIMUOVO EVENTUALI MESSAGGI DI ERRORE
     messageElement.innerText = "";
 
     const correctGuesses = [];
@@ -226,7 +226,8 @@ const showNumbersString =  (numbersToShow) => {
 const validateUserAnswer =  () => {
     let isValid = true;
     let answerValues = [];
-    // messageElement.innerText = "";
+    // * TEST 1: RIMUOVO EVENTUALI MESSAGGI DI ERRORE
+    messageElement.innerText = "";
     let errorMSG = "";
 
     answerInputs.forEach(input => {

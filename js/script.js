@@ -35,8 +35,14 @@ let messageElement = document.getElementById('message');
 // * VERSIONE CON VALIDAZIONE FATTA DA ME
 const confirmButton = document.getElementById('confirmButton');
 confirmButton.addEventListener('click', function(e) {
+    // * TEST 3: RIMUOVO EVENTUALI MESSAGGI DI ERRORE
+    messageElement.innerText = "";
     const isAnswerValid = validateUserAnswer();
-    if (isAnswerValid) checkAnswer();
+    // if (isAnswerValid) checkAnswer();
+    if (isAnswerValid) {
+        checkAnswer();
+    };
+        
 });
 
 
