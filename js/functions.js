@@ -8,6 +8,23 @@
 
 
 
+
+/**
+ * Funzione che fa iniziare il gioco
+ * Richiama la funzione per mostrare la combinazione da ricordare al giocatore e la funzione che fa partire il timer
+ * @param {Array<number>} numbers 
+ */
+const startGame = (numbers) =>{
+    showNumbers(numbers);
+    startTimer();
+}
+
+
+
+
+
+
+
 /**
  * Funzione che genera la combinazione di numeri da ricordare, impedendo che si ripetano due numeri
  * @param {number} numbersToGenerate Quantitativo di numeri che la combinazione deve contenere
@@ -25,7 +42,7 @@ const generateCombination = (numbersToGenerate, maxNumberToGenerate, minNumberTo
         const newNumber = generateRandomNumber(maxNumberToGenerate, minNumberToGenerate);
         if (generatedNumbers.includes(newNumber) === false) generatedNumbers.push(newNumber);
     }
-    console.debug(generatedNumbers);
+    // console.debug(generatedNumbers);
 
     return generatedNumbers;
 };
@@ -45,10 +62,13 @@ const generateRandomNumber = (max, min) => {
 
 
 
-
+/**
+ * Funzione che riceve la lista di numeri da ricordare e la inserisce nella pagina
+ * @param {Array<number>} numbersToShow Lista di numeri da ricordare da mostrare in pagina
+ */
 const showNumbers = (numbersToShow) => {
-    console.debug(numbersToShow);
-    console.debug(numbersListElement);
+    // console.debug(numbersToShow);
+    // console.debug(numbersListElement);
 
     numbersToShow.forEach(number => {
         const numberHTMLElement = document.createElement('div');
@@ -61,3 +81,140 @@ const showNumbers = (numbersToShow) => {
         numbersListElement.appendChild(numberHTMLElement);
     });
 };
+
+
+
+/**
+ * Funzione che fa partire il timer per ricordare la combinazione
+ * Inizialmente mostra il valore iniziale
+ * In seguito fa partire un interval che decrementa il tempo a disposizione ogni secondo
+ */
+const startTimer = () => {
+    showTimeLeft();
+
+    countdownIntervalId = setInterval(function() {
+        decreaseTimer(remainingTime);
+    }, 1000);
+};
+
+
+
+/**
+ * Funzione che mostra sullo schermo il tempo rimanente
+ */
+const showTimeLeft = () => {
+    countdownElement.innerText = remainingTime / 1000;
+}
+
+
+
+
+/**
+ * Funzione che decrementa il tempo a disposizione
+ * Inizialmente controlla che il tempo rimasto sia maggiore di 0
+ * Se lo è lo decrementa e richiama la funzione che lo mostra sullo schermo
+ * Se non lo è rimuove l'interval che la richiama ogni secondo e richiama la funzione che nasconde i numeri all'utente e la funzione che mostra la schermata per l'inserimento dei numeri da parte sua
+ */
+const decreaseTimer = () => {
+    if (remainingTime > 0) {
+        remainingTime -= 1000;
+        showTimeLeft();
+    } else {
+        console.debug("TEMPO SCADUTO");
+        hideCountdown();
+        showAnswersForm();
+        clearInterval(countdownIntervalId);
+        countdownIntervalId = undefined;
+    };
+};
+
+
+
+/**
+ * Funzione che nasconde il countdown e i numeri da ricordare
+ */
+const hideCountdown =  () => {
+    countdownElement.classList.add('d-none');
+    numbersListElement.classList.add('d-none');
+};
+
+/**
+ * Funzione che modifica le istruzioni e mostra all'utente il form per inserire i numeri che si ricordano
+ */
+const showAnswersForm =  () => {
+    instructionsElement.innerText = `Inserisci i numeri (L'ordine non è importante)`
+    answersFormElement.classList.remove('d-none');
+};
+
+
+
+/**
+ * Funzione che controlla i valori inseriti dall'utente
+ * @param {event} e Evento submit per cui prevenire il comportamento di default che ricarica la pagina
+ */
+const checkAnswer =  (e) => {
+    e.preventDefault();
+    // console.debug(answerInputs);
+
+    const correctGuesses = [];
+
+    answerInputs.forEach(input => {
+        const currentValue = parseInt(input.value);
+        // console.debug(currentValue);
+        const isCorrect = checkNumber(currentValue);
+        if (isCorrect) correctGuesses.push(currentValue)
+    })
+
+    console.debug(correctGuesses);
+
+    showResults(correctGuesses);
+};
+
+
+/**
+ * Funzione che controlla se il valore inserito dall'utente è presente nella combinazione
+ * @param {number} number Valore inserito dall'utente per cui controllare la presenza nella combinazione
+ * @returns {boolean} Valore che indica se il numero è presente nella combinazione iniziale
+ */
+const checkNumber =  (number) => {
+    console.debug(number);
+
+    return numbers.includes(number);
+};
+
+
+
+/**
+ * Funzione che riceve la lista di numeri indovinati e mostra all'utente un messaggio con un riepilogo
+ * @param {Array<number>} correctGuesses Lista di numeri indovinati dall'utente
+ */
+const showResults =  (correctGuesses) => {
+    if (correctGuesses.length === 0) {
+        alert(`Non hai ricordato nessun numero!
+I numeri da ricordare erano: ${showNumbersString(numbers)}`);
+    } else if (correctGuesses.length === numbers.length) {
+        alert(`Hai ricordato tutti e ${numbers.length} i numeri!
+I numeri da ricordare erano: ${showNumbersString(numbers)}`);
+    } else {
+        alert(`Hai ricordato ${correctGuesses.length} numeri!
+I numeri che hai ricordato sono: ${showNumbersString(correctGuesses)}
+I numeri da ricordare erano: ${showNumbersString(numbers)}`);
+    };
+};
+
+
+
+const showNumbersString =  (numbersToShow) => {
+    let string = "";
+    numbersToShow.forEach(number => {
+        string.length === 0 ? string = number : string = `${string}, ${number}`
+    })
+    return string;
+};
+
+
+
+
+// const funzione =  () => {
+
+// };
