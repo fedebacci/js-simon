@@ -8,7 +8,6 @@
 
 
 
-
 /**
  * Funzione che fa iniziare il gioco
  * Richiama la funzione per mostrare la combinazione da ricordare al giocatore e la funzione che fa partire il timer
@@ -18,10 +17,6 @@ const startGame = (numbers) =>{
     showNumbers(numbers);
     startTimer();
 }
-
-
-
-
 
 
 
@@ -41,12 +36,10 @@ const generateCombination = (numbersToGenerate, maxNumberToGenerate, minNumberTo
     while (generatedNumbers.length < numbersToGenerate) {
         const newNumber = generateRandomNumber(maxNumberToGenerate, minNumberToGenerate);
         if (generatedNumbers.includes(newNumber) === false) generatedNumbers.push(newNumber);
-    }
+    };
     // console.debug(generatedNumbers);
-
     return generatedNumbers;
 };
-
 
 
 
@@ -67,6 +60,7 @@ const generateRandomNumber = (max, min) => {
  * @param {Array<number>} numbersToShow Lista di numeri da ricordare da mostrare in pagina
  */
 const showNumbers = (numbersToShow) => {
+
     // console.debug(numbersToShow);
     // console.debug(numbersListElement);
 
@@ -108,7 +102,6 @@ const showTimeLeft = () => {
 
 
 
-
 /**
  * Funzione che decrementa il tempo a disposizione
  * Inizialmente controlla che il tempo rimasto sia maggiore di 0
@@ -120,7 +113,6 @@ const decreaseTimer = () => {
         remainingTime -= 1000;
         showTimeLeft();
     } else {
-        console.debug("TEMPO SCADUTO");
         hideCountdown();
         showAnswersForm();
         clearInterval(countdownIntervalId);
@@ -149,63 +141,6 @@ const showAnswersForm =  () => {
 
 
 /**
- * Funzione che controlla i valori inseriti dall'utente
- */
-const checkAnswer =  () => {
-    // console.debug(answerInputs);
-    // * TEST 2: RIMUOVO EVENTUALI MESSAGGI DI ERRORE
-    messageElement.innerText = "";
-
-    const correctGuesses = [];
-
-    answerInputs.forEach(input => {
-        // console.debug(input.value);
-        // console.debug(input.value.length);
-        const currentValue = parseInt(input.value);
-        // console.debug(currentValue);
-        const isCorrect = checkNumber(currentValue);
-        if (isCorrect) correctGuesses.push(currentValue)
-    })
-
-    console.debug(correctGuesses);
-
-    showResults(correctGuesses);
-};
-
-
-/**
- * Funzione che controlla se il valore inserito dall'utente è presente nella combinazione
- * @param {number} number Valore inserito dall'utente per cui controllare la presenza nella combinazione
- * @returns {boolean} Valore che indica se il numero è presente nella combinazione iniziale
- */
-const checkNumber =  (number) => {
-    // console.debug(number);
-    return numbers.includes(number);
-};
-
-
-
-/**
- * Funzione che riceve la lista di numeri indovinati e mostra all'utente un messaggio con un riepilogo
- * @param {Array<number>} correctGuesses Lista di numeri indovinati dall'utente
- */
-const showResults =  (correctGuesses) => {
-    if (correctGuesses.length === 0) {
-        alert(`Non hai ricordato nessun numero!
-I numeri da ricordare erano: ${showNumbersString(numbers)}`);
-    } else if (correctGuesses.length === numbers.length) {
-        alert(`Hai ricordato tutti e ${numbers.length} i numeri!
-I numeri da ricordare erano: ${showNumbersString(numbers)}`);
-    } else {
-        alert(`Hai ricordato ${correctGuesses.length} numeri!
-I numeri che hai ricordato sono: ${showNumbersString(correctGuesses)}
-I numeri da ricordare erano: ${showNumbersString(numbers)}`);
-    };
-};
-
-
-
-/**
  * Funzione che riceve un array di numeri da mostrare sotto forma di stringa all'interno di un messaggio
  * @param {Array<number>} numbersToShow Lista di numeri da inserire nel messaggio. Possono essere i numeri da ricordare o i numeri ricordati correttamente
  * @returns {string} La stringa generata che contiene i numeri da mostrare
@@ -220,17 +155,15 @@ const showNumbersString =  (numbersToShow) => {
 
 
 
-// todo: AGGIUNGERE LA VALIDAZIONE
-// ? COME IMPEDIRE LA VALIDAZIONE AUTOMATICA DEL BROWSER?
-// ? FORSE MODIFICANDO IL BOTTONE COME TYPE="BUTTON" E SPOSTANDO QUESTE AZIONI SUL LISTENER DI EVENTI "CLICK" DEL PULSANTE INVECE CHE SUL LISTENER "INPUT" DEL FORM
 const validateUserAnswer =  () => {
     let isValid = true;
     let answerValues = [];
     // * TEST 1: RIMUOVO EVENTUALI MESSAGGI DI ERRORE
-    messageElement.innerText = "";
+    errorMessageElement.innerText = "";
     let errorMSG = "";
 
     answerInputs.forEach(input => {
+
         // console.debug(input);
         // console.debug(input.value);
         // console.debug(input.value.length);
@@ -252,7 +185,6 @@ const validateUserAnswer =  () => {
             input.classList.add('border-danger');
             // input.value = maxNumber;
         } else if (answerValues.includes(parseInt(input.value)) === true) {
-            // answerValues.includes(parseInt(input.value)) === false ? answerValues.push(parseInt(input.value)) : errorMSG += `Il numero ${input.value} si ripete. Inserisci un numero diverso in ciascun input.\n`;
             isValid = false;
             errorMSG += `Il numero ${input.value} si ripete. Inserisci un numero diverso in ciascun input.\n`;
             input.classList.add('border-danger');
@@ -263,15 +195,89 @@ const validateUserAnswer =  () => {
         
     })
 
-    // console.debug(messageElement);
+    // console.debug(errorMessageElement);
     // console.debug(errorMSG);
-    if (isValid === false) messageElement.innerText = errorMSG;
+    if (isValid === false) errorMessageElement.innerText = errorMSG;
     return isValid;
 };
 
 
 
+/**
+ * Funzione che controlla i valori inseriti dall'utente (Lanciata solo se la validazione lo permette)
+ */
+const checkAnswer =  () => {
 
-// const funzione =  () => {
+    // console.debug(answerInputs);
 
-// };
+    const correctGuesses = [];
+
+    answerInputs.forEach(input => {
+        // console.debug(input.value);
+        // console.debug(input.value.length);
+        const currentValue = parseInt(input.value);
+        // console.debug(currentValue);
+        const isCorrect = checkNumber(currentValue);
+        if (isCorrect) correctGuesses.push(currentValue)
+    })
+
+    // console.debug(correctGuesses);
+    showResults(correctGuesses);
+};
+
+
+
+/**
+ * Funzione che controlla se il valore inserito dall'utente è presente nella combinazione
+ * @param {number} number Valore inserito dall'utente per cui controllare la presenza nella combinazione
+ * @returns {boolean} Valore che indica se il numero è presente nella combinazione iniziale
+ */
+const checkNumber =  (number) => {
+    // console.debug(number);
+    return numbers.includes(number);
+};
+
+
+
+/**
+ * Funzione che riceve la lista di numeri indovinati e mostra all'utente un messaggio con un riepilogo
+ * @param {Array<number>} correctGuesses Lista di numeri indovinati dall'utente
+ */
+const showResults =  (correctGuesses) => {
+    let resultsMSG = ""
+    if (correctGuesses.length === 0) {
+        resultsMSG = `Non hai ricordato nessun numero!
+I numeri da ricordare erano: ${showNumbersString(numbers)}`;
+        resultsElement.classList.add('bg-danger', 'text-bg-danger');
+    } else if (correctGuesses.length === numbers.length) {
+        resultsMSG = `Hai ricordato tutti e ${numbers.length} i numeri!
+I numeri da ricordare erano: ${showNumbersString(numbers)}`;
+        resultsElement.classList.add('bg-success', 'text-bg-success');
+    } else {
+        resultsMSG = `Hai ricordato ${correctGuesses.length} numeri su ${numbers.length}!
+I numeri che hai ricordato sono: ${showNumbersString(correctGuesses)}
+I numeri da ricordare erano: ${showNumbersString(numbers)}`;
+        resultsElement.classList.add('bg-success-subtle');
+    };
+
+    resultsElement.innerText = resultsMSG;
+    resultsElement.classList.remove('d-none');
+};
+
+
+
+/**
+ * Funzione che nasconde il blocco contenente i risultati e cancella le classi per lo stile presenti
+ */
+const resetResultsElement = () => {
+    resultsElement.classList.add('d-none');
+    if (resultsElement.classList.contains('bg-danger')) {
+        resultsElement.classList.remove('bg-danger');
+        resultsElement.classList.remove('text-bg-danger');
+    };
+    if (resultsElement.classList.contains('bg-success')) {
+        resultsElement.classList.remove('bg-success');
+        resultsElement.classList.remove('text-bg-success');
+    };
+    if (resultsElement.classList.contains('bg-success-subtle')) resultsElement.classList.remove('bg-success-subtle');
+};

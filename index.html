@@ -16,10 +16,16 @@
 </head>
 
 <body>
-  <div class="d-flex vh-100 w-50 m-auto d-flex justify-content-center align-items-center flex-column">
+  <!-- VERSIONE ORIGINALE -->
+  <!-- <div class="d-flex vh-100 w-50 m-auto d-flex justify-content-center align-items-center flex-column"> -->
+  <!-- * MIA VERSIONE CON LARGHEZZA CORRETTA -->
+  <div class="d-flex vw-100 vh-100 w-50 m-auto d-flex justify-content-center align-items-center flex-column">
     <!-- Countdown -->
-    <div id="countdown" class="fs-1 fw-bolder"></div>
-    <p id="instructions">Memorizza i numeri entro il tempo limite!</p>
+    <div id="countdown" class="fs-1 fw-bolder">
+    </div>
+    <p id="instructions">
+      Memorizza i numeri entro il tempo limite!
+    </p>
 
     <!-- Numbers -->
     <ul id="numbers-list" class="d-flex gap-5 list-unstyled"></ul>
@@ -31,17 +37,22 @@
         <input type="number" class="form-control" min="1" max="50" required>
         <input type="number" class="form-control" min="1" max="50" required>
         <input type="number" class="form-control" min="1" max="50" required>
-        <input type="number" class="form-control" min="1" max="50">
+        <input type="number" class="form-control" min="1" max="50" required>
       </div>
       <!-- * VECCHIA VERSIONE PRIMA DELLA VALIDAZIONE FATTA DA ME (VALIDAZIONE AUTOMATICA DEL BROWSER) -->
       <!-- <button class="btn btn-primary mt-2 d-block mx-auto">
         Conferma
       </button> -->
+      <!-- * NUOVA VERSIONE CON VALIDAZIONE FATTA DA ME -->
       <button type="button" id="confirmButton" class="btn btn-primary mt-2 d-block mx-auto">
         Conferma
       </button>
-      <p class="text-danger text-center" id="message"></p>
+      <p class="text-danger text-center" id="message">
+      </p>
     </form>
+
+    <div id="results" class="card shadow mt-4 p-4 d-none">
+    </div>
   </div>
 
   <!-- Scripts -->

@@ -14,20 +14,19 @@ const maxNumber = 50;
 const minNumber = 1;
 const numbers = generateCombination(requestedNubers, maxNumber, minNumber);
 const numbersListElement = document.getElementById('numbers-list');
-let remainingTime = 3000;
+let remainingTime = 30000;
 const countdownElement = document.getElementById('countdown');
 let countdownIntervalId;
 const instructionsElement = document.getElementById('instructions');
 const answersFormElement = document.getElementById('answers-form');
 const answerInputs = answersFormElement.querySelectorAll('input');
-let messageElement = document.getElementById('message');
+let errorMessageElement = document.getElementById('message');
+let resultsElement = document.getElementById('results');
+
 
 
 // * LISTENERS DI EVENTI
 // * VECCHIA VERSIONE PRIMA DELLA VALIDAZIONE FATTA DA ME (VALIDAZIONE AUTOMATICA DEL BROWSER)
-// todo: AGGIUNGERE LA VALIDAZIONE
-// ? COME IMPEDIRE LA VALIDAZIONE AUTOMATICA DEL BROWSER?
-// ? FORSE MODIFICANDO IL BOTTONE COME TYPE="BUTTON" E SPOSTANDO QUESTE AZIONI SUL LISTENER DI EVENTI "CLICK" DEL PULSANTE INVECE CHE SUL LISTENER "INPUT" DEL FORM
 // answersFormElement.addEventListener('submit', function(e) {
 //     e.preventDefault();
 //     checkAnswer();
@@ -35,15 +34,11 @@ let messageElement = document.getElementById('message');
 // * VERSIONE CON VALIDAZIONE FATTA DA ME
 const confirmButton = document.getElementById('confirmButton');
 confirmButton.addEventListener('click', function(e) {
-    // * TEST 3: RIMUOVO EVENTUALI MESSAGGI DI ERRORE
-    messageElement.innerText = "";
+    if (!resultsElement.classList.contains('d-none')) resetResultsElement();
     const isAnswerValid = validateUserAnswer();
-    // if (isAnswerValid) checkAnswer();
-    if (isAnswerValid) {
-        checkAnswer();
-    };
-        
+    if (isAnswerValid === true) checkAnswer();
 });
+
 
 
 // * CHIAMO LA FUNZIONE PER FAR INIZIARE IL GIOCO
