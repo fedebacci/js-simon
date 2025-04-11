@@ -10,10 +10,15 @@
 
 /**
  * Funzione che fa iniziare il gioco
+ * Imposta i valori da ricordare
  * Richiama la funzione per mostrare la combinazione da ricordare al giocatore e la funzione che fa partire il timer
- * @param {Array<number>} numbers 
  */
-const startGame = (numbers) =>{
+const startGame = () =>{
+    console.debug('Game started');
+    generateCombination(requestedNubers, maxNumber, minNumber);
+    setRemainingTime();
+
+    console.debug(numbers)
     showNumbers(numbers);
     startTimer();
 }
@@ -31,14 +36,10 @@ const generateCombination = (numbersToGenerate, maxNumberToGenerate, minNumberTo
     // todo: CREARE UN CONTROLLO (CHE NON DOVREBBE SERVIRE) PER FAR TERMINARE IL WHILE IN CASO I NUMERI RICHIESTI ECCEDANO I NUMERI A DISPOSIZIONE (ES: Richiedo 5 numeri compresi tra 1 e 4)
     // let iterations = 0;
 
-    const generatedNumbers = [];
-
-    while (generatedNumbers.length < numbersToGenerate) {
+    while (numbers.length < numbersToGenerate) {
         const newNumber = generateRandomNumber(maxNumberToGenerate, minNumberToGenerate);
-        if (generatedNumbers.includes(newNumber) === false) generatedNumbers.push(newNumber);
+        if (numbers.includes(newNumber) === false) numbers.push(newNumber);
     };
-    // console.debug(generatedNumbers);
-    return generatedNumbers;
 };
 
 
@@ -130,6 +131,8 @@ const hideCountdown =  () => {
     numbersListElement.classList.add('d-none');
 };
 
+
+
 /**
  * Funzione che modifica le istruzioni e mostra all'utente il form per inserire i numeri che si ricordano
  */
@@ -155,44 +158,53 @@ const showNumbersString =  (numbersToShow) => {
 
 
 
+/**
+ * Funzione che controlla che i valori inseriti dall'utente siano valori numerici non duplicati compresi tra il numero massimo e il numero minimo
+ * Controlla quindi che i valori non siano vuoti, non contengano caratteri, non siano inseriti due volte, non siano maggiori del valore massimo e non siano inferiori al valore minimo
+ * @returns {boolean} Valore che indica se tutti i valori inseriti dall'utente sono accettabili e se è possibile procedere al confronto con i valori generati
+ */
 const validateUserAnswer =  () => {
     let isValid = true;
     let answerValues = [];
-    // * TEST 1: RIMUOVO EVENTUALI MESSAGGI DI ERRORE
     errorMessageElement.innerText = "";
     let errorMSG = "";
 
-    answerInputs.forEach(input => {
+    answerInputs.forEach(inputElement => {
 
-        // console.debug(input);
-        // console.debug(input.value);
-        // console.debug(input.value.length);
-        // console.debug(parseInt(input.value));
+        // console.debug(inputElement);
+        // console.debug(inputElement.value);
+        // console.debug(inputElement.value.length);
+        // console.debug(parseInt(inputElement.value));
 
-        if (input.value.length === 0) {
-            isValid = false;
-            errorMSG += "Almeno un input è vuoto o contiene un valore non numerico. Inserisci un numero in ciascun input.\n";
-            input.classList.add('border-danger');
-            // input.value = minNumber;
-        } else if (parseInt(input.value) < minNumber) {
-            isValid = false;
-            errorMSG += `Il numero ${input.value} è minore del numero minimo: ${minNumber}. Inserisci un numero maggiore o uguale a ${minNumber}.\n`;
-            input.classList.add('border-danger');
-            // input.value = minNumber;
-        } else if (parseInt(input.value) > maxNumber) {
-            isValid = false;
-            errorMSG += `Il numero ${input.value} è maggiore del numero massimo: ${maxNumber}. Inserisci un numero minore o uguale a ${maxNumber}.\n`;
-            input.classList.add('border-danger');
-            // input.value = maxNumber;
-        } else if (answerValues.includes(parseInt(input.value)) === true) {
-            isValid = false;
-            errorMSG += `Il numero ${input.value} si ripete. Inserisci un numero diverso in ciascun input.\n`;
-            input.classList.add('border-danger');
-        } else {
-            if (input.classList.contains('border-danger')) input.classList.remove('border-danger');
-            answerValues.push(parseInt(input.value));
+        switch(true) {
+            case inputElement.value.length === 0:
+                isValid = false;
+                errorMSG += "Almeno un input è vuoto o contiene un valore non numerico. Inserisci un numero in ciascun input.\n";
+                setErrorInput(inputElement);
+                // inputElement.value = minNumber;
+                break;
+            case parseInt(inputElement.value) < minNumber:
+                isValid = false;
+                errorMSG += `Il numero ${inputElement.value} è minore del numero minimo: ${minNumber}. Inserisci un numero maggiore o uguale a ${minNumber}.\n`;
+                setErrorInput(inputElement);
+                // input.value = minNumber;
+                break;  
+            case parseInt(inputElement.value) > maxNumber:
+                isValid = false;
+                errorMSG += `Il numero ${inputElement.value} è maggiore del numero massimo: ${maxNumber}. Inserisci un numero minore o uguale a ${maxNumber}.\n`;
+                setErrorInput(inputElement);
+                // input.value = maxNumber;
+                break;  
+            case answerValues.includes(parseInt(inputElement.value)) === true:
+                isValid = false;
+                errorMSG += `Il numero ${inputElement.value} si ripete. Inserisci un numero diverso in ciascun input.\n`;
+                setErrorInput(inputElement);
+                break;
+            default:
+                if (inputElement.classList.contains('border-danger')) inputElement.classList.remove('border-danger');
+                answerValues.push(parseInt(inputElement.value));
+                break;  
         };
-        
     })
 
     // console.debug(errorMessageElement);
@@ -204,25 +216,37 @@ const validateUserAnswer =  () => {
 
 
 /**
- * Funzione che controlla i valori inseriti dall'utente (Lanciata solo se la validazione lo permette)
+ * Funzione che segnala un input erroneo aggiungendo la classe di Bootstrap .border-danger
+ * @param {input} input Elemento HTML da segnalare come erroneo
  */
-const checkAnswer =  () => {
+const setErrorInput = (input) => {
+    input.classList.add('border-danger');
+};
+
+
+
+/**
+ * Funzione che controlla i valori inseriti dall'utente (Lanciata solo se la validazione lo permette)
+ * Richiama la funzione per mostrare il risultato e la funzione per nascondere gli input dell'utente.
+ */
+const checkAnswer =  (numbers) => {
 
     // console.debug(answerInputs);
 
     const correctGuesses = [];
 
-    answerInputs.forEach(input => {
-        // console.debug(input.value);
-        // console.debug(input.value.length);
-        const currentValue = parseInt(input.value);
+    answerInputs.forEach(inputElement => {
+        // console.debug(inputElement.value);
+        // console.debug(inputElement.value.length);
+        const currentValue = parseInt(inputElement.value);
         // console.debug(currentValue);
-        const isCorrect = checkNumber(currentValue);
+        const isCorrect = checkNumber(numbers, currentValue);
         if (isCorrect) correctGuesses.push(currentValue)
     })
 
     // console.debug(correctGuesses);
     showResults(correctGuesses);
+    hideUserInterface();
 };
 
 
@@ -232,7 +256,7 @@ const checkAnswer =  () => {
  * @param {number} number Valore inserito dall'utente per cui controllare la presenza nella combinazione
  * @returns {boolean} Valore che indica se il numero è presente nella combinazione iniziale
  */
-const checkNumber =  (number) => {
+const checkNumber =  (numbers, number) => {
     // console.debug(number);
     return numbers.includes(number);
 };
@@ -260,9 +284,32 @@ I numeri da ricordare erano: ${showNumbersString(numbers)}`;
         resultsElement.classList.add('bg-success-subtle');
     };
 
+    const restartButton = document.createElement('button');
+    restartButton.className = 'btn btn-primary mt-2 d-block mx-auto';
+    restartButton.innerText = 'Nuova partita';
+    restartButton.addEventListener('click', function() {
+        setRemainingTime();
+        numbers.length = 0;
+        resetUserInterface();
+        resetUserValues();
+        resetResultsElement();
+        startGame();
+    });
+
     resultsElement.innerText = resultsMSG;
+    resultsElement.appendChild(restartButton);
     resultsElement.classList.remove('d-none');
 };
+
+
+
+/**
+ * Funzione che nasconde le istruzioni per l'utente e il form per l'inserimento delle risposte
+ */
+const hideUserInterface = () => {
+    instructionsElement.classList.add('d-none');
+    answersFormElement.classList.add('d-none');
+}
 
 
 
@@ -280,4 +327,27 @@ const resetResultsElement = () => {
         resultsElement.classList.remove('text-bg-success');
     };
     if (resultsElement.classList.contains('bg-success-subtle')) resultsElement.classList.remove('bg-success-subtle');
+};
+
+
+
+const resetUserInterface = () => {
+    numbersListElement.innerHTML = '';
+    countdownElement.classList.remove('d-none');
+    instructionsElement.classList.remove('d-none');
+    numbersListElement.classList.remove('d-none');
+};
+
+
+
+const resetUserValues = () => {
+    answerInputs.forEach(inputElement => {
+        inputElement.value = "";
+    });    
+};
+
+
+
+const setRemainingTime = () => {
+    remainingTime = 3000;
 };
