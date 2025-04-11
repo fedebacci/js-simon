@@ -42,3 +42,22 @@ const generateCombination = (numbersToGenerate, maxNumberToGenerate, minNumberTo
 const generateRandomNumber = (max, min) => {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 };
+
+
+
+
+const showNumbers = (numbersToShow) => {
+    console.debug(numbersToShow);
+    console.debug(numbersListElement);
+
+    numbersToShow.forEach(number => {
+        const numberHTMLElement = document.createElement('div');
+        numberHTMLElement.className = 'shownNumber d-flex justify-content-center align-items-center border border-1 border-dark-subtle rounded';
+        numberHTMLElement.innerHTML = `
+        <span>
+            ${number}
+        </span>
+        `;
+        numbersListElement.appendChild(numberHTMLElement);
+    });
+};

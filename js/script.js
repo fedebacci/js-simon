@@ -13,3 +13,7 @@ const requestedNubers = 5;
 const maxNumber = 50;
 const minNumber = 1;
 const numbers = generateCombination(requestedNubers, maxNumber, minNumber);
+const numbersListElement = document.getElementById('numbers-list');
+
+
+showNumbers(numbers);
