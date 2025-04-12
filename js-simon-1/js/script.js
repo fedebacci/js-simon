@@ -15,6 +15,9 @@ const minNumber = 1;
 const numbers = [];
 let remainingTime = 0;
 let countdownIntervalId;
+const pageHeaderElement = document.querySelector('header');
+const pageMainElement = document.querySelector('main');
+const gameScreenElement = document.getElementById('gameScreenElement');
 const numbersListElement = document.getElementById('numbers-list');
 const countdownElement = document.getElementById('countdown');
 const instructionsElement = document.getElementById('instructions');
@@ -26,12 +29,8 @@ const resultsElement = document.getElementById('results');
 
 
 // * LISTENERS DI EVENTI
-// * VECCHIA VERSIONE PRIMA DELLA VALIDAZIONE FATTA DA ME (VALIDAZIONE AUTOMATICA DEL BROWSER)
-// answersFormElement.addEventListener('submit', function(e) {
-//     e.preventDefault();
-//     checkAnswer();
-// });
-// * VERSIONE CON VALIDAZIONE FATTA DA ME
+const startGameButton = document.getElementById('startGameButton');
+startGameButton.addEventListener('click', startGame);
 const confirmButton = document.getElementById('confirmButton');
 confirmButton.addEventListener('click', function(e) {
     if (!resultsElement.classList.contains('d-none')) resetResultsElement();
@@ -42,4 +41,4 @@ confirmButton.addEventListener('click', function(e) {
 
 
 // * CHIAMO LA FUNZIONE PER FAR INIZIARE IL GIOCO
-startGame();
+// startGame();

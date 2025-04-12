@@ -15,6 +15,8 @@
  */
 const startGame = () =>{
     console.debug('Game started');
+    hidePageElements();
+    showGameScreen();
     generateCombination(requestedNubers, maxNumber, minNumber);
     setRemainingTime();
 
@@ -288,18 +290,33 @@ I numeri da ricordare erano: ${showNumbersString(numbers)}`;
     restartButton.className = 'btn btn-primary mt-2 d-block mx-auto';
     restartButton.innerText = 'Nuova partita';
     restartButton.addEventListener('click', function() {
-        setRemainingTime();
-        numbers.length = 0;
-        resetUserInterface();
-        resetUserValues();
-        resetResultsElement();
+        resetGameData();
         startGame();
+    });
+    const backButton = document.createElement('button');
+    backButton.className = 'btn btn-light mt-2 d-block mx-auto';
+    backButton.innerText = 'Torna alla schermata principale';
+    backButton.addEventListener('click', function() {
+        resetGameData();
+        showPageElements();
+        hideGameScreen();
     });
 
     resultsElement.innerText = resultsMSG;
     resultsElement.appendChild(restartButton);
+    resultsElement.appendChild(backButton);
     resultsElement.classList.remove('d-none');
 };
+
+
+
+const resetGameData = () => {
+    setRemainingTime();
+    numbers.length = 0;
+    resetUserInterface();
+    resetUserValues();
+    resetResultsElement();
+}
 
 
 
@@ -309,6 +326,25 @@ I numeri da ricordare erano: ${showNumbersString(numbers)}`;
 const hideUserInterface = () => {
     instructionsElement.classList.add('d-none');
     answersFormElement.classList.add('d-none');
+}
+
+
+
+const hidePageElements = () => {
+    pageHeaderElement.classList.add('d-none');
+    pageMainElement.classList.add('d-none');
+}
+const showGameScreen = () => {
+    gameScreenElement.classList.remove('d-none');
+    gameScreenElement.classList.add('d-flex');
+}
+const showPageElements = () => {
+    pageHeaderElement.classList.remove('d-none');
+    pageMainElement.classList.remove('d-none');
+}
+const hideGameScreen = () => {
+    gameScreenElement.classList.add('d-none');
+    gameScreenElement.classList.remove('d-flex');
 }
 
 
