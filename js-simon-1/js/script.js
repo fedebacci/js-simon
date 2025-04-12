@@ -20,11 +20,25 @@ const difficulties = [
         time: 30000,
     },
     {
+        name: 'medio-facile',
+        requestedNumbers: 5,
+        maxNumber: 20,
+        minNumber: 1,
+        time: 20000,
+    },
+    {
         name: 'medio',
         requestedNumbers: 5,
         maxNumber: 50,
         minNumber: 1,
         time: 15000,
+    },
+    {
+        name: 'medio-difficile',
+        requestedNumbers: 7,
+        maxNumber: 100,
+        minNumber: 1,
+        time: 10000,
     },
     {
         name: 'difficile',
@@ -73,4 +87,5 @@ selectDifficultyElement.addEventListener('change', function(e) {
 
 
 
+showDifficultyOptions();
 describeDifficulty(selectDifficultyElement.value);

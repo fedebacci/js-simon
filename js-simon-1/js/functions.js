@@ -8,6 +8,28 @@
 
 
 
+const showDifficultyOptions = () => {
+    difficulties.forEach(difficulty => {
+        const newDifficultyOptionElement = document.createElement('option');
+        newDifficultyOptionElement.value = difficulty.name;
+        newDifficultyOptionElement.innerText = convertDifficultyNameToString(difficulty.name);
+
+        selectDifficulty.appendChild(newDifficultyOptionElement);
+    });
+};
+
+
+
+/**
+ * Funzione che converte il nome della difficoltà per la lettura da parte dell'utente
+ * @param {string} name Nome originale della difficoltà da convertire
+ * @returns {string} Nome della difficoltà da mostrare all'utente
+ */
+const convertDifficultyNameToString = (name) => {
+    return name[0].toUpperCase() + name.replaceAll('-', ' ').slice(1)
+}
+
+
 
 /**
  * Funzione che riceve il nome della difficoltà attualmente selezionata dall'utente e ne mostra in pagina i dettagli come n° di elementi da ricordare, range dei numeri generati e tempo a disposizione convertito in secondi 
@@ -18,7 +40,7 @@ const describeDifficulty = (difficultyName) => {
     // console.debug(currentDifficulty);
     difficultyDescriptionElement.innerHTML = `
         <p class="mb-2 fw-bolder">
-            Difficoltà selezionata: ${currentDifficulty.name}
+            Difficoltà selezionata: ${convertDifficultyNameToString(currentDifficulty.name)}
         </p>
         <p class="mb-2">
             Numeri generati: ${currentDifficulty.requestedNumbers}
@@ -83,7 +105,7 @@ const setDifficultyLevel = () => {
  * @param {number} numbersToGenerate Quantitativo di numeri che la combinazione deve contenere
  * @param {number} maxNumberToGenerate Numero massimo che si può generare (COMPRESO)
  * @param {number} minNumberToGenerate Numero minimo che si può generare (COMPRESO)
- * @returns {Array<number>} Array contenente la combinazione generata
+ * @returns {Array.<number>} Array contenente la combinazione generata
  */
 const generateCombination = (numbersToGenerate, maxNumberToGenerate, minNumberToGenerate) => {
     // todo: CREARE UN CONTROLLO (CHE NON DOVREBBE SERVIRE) PER FAR TERMINARE IL WHILE IN CASO I NUMERI RICHIESTI ECCEDANO I NUMERI A DISPOSIZIONE (ES: Richiedo 5 numeri compresi tra 1 e 4)
@@ -111,7 +133,7 @@ const generateRandomNumber = (max, min) => {
 
 /**
  * Funzione che riceve la lista di numeri da ricordare e la inserisce nella pagina
- * @param {Array<number>} numbersToShow Lista di numeri da ricordare da mostrare in pagina
+ * @param {Array.<number>} numbersToShow Lista di numeri da ricordare da mostrare in pagina
  */
 const showNumbers = (numbersToShow) => {
 
@@ -207,7 +229,7 @@ const showAnswersForm =  () => {
 
 /**
  * Funzione che riceve un array di numeri da mostrare sotto forma di stringa all'interno di un messaggio
- * @param {Array<number>} numbersToShow Lista di numeri da inserire nel messaggio. Possono essere i numeri da ricordare o i numeri ricordati correttamente
+ * @param {Array.<number>} numbersToShow Lista di numeri da inserire nel messaggio. Possono essere i numeri da ricordare o i numeri ricordati correttamente
  * @returns {string} La stringa generata che contiene i numeri da mostrare
  */
 const showNumbersString =  (numbersToShow) => {
@@ -316,6 +338,7 @@ const checkAnswer =  (answerInputs, numbers) => {
 
 /**
  * Funzione che controlla se il valore inserito dall'utente è presente nella combinazione
+ * @param {Array.<number>} numbers La combinazione da ricordare
  * @param {number} number Valore inserito dall'utente per cui controllare la presenza nella combinazione
  * @returns {boolean} Valore che indica se il numero è presente nella combinazione iniziale
  */
@@ -328,7 +351,8 @@ const checkNumber =  (numbers, number) => {
 
 /**
  * Funzione che riceve la lista di numeri indovinati e mostra all'utente un messaggio con un riepilogo
- * @param {Array<number>} correctGuesses Lista di numeri indovinati dall'utente
+ * Genera anche il pulsante per iniziare una nuova partita ed il pulsante per tornare alla schermata principale
+ * @param {Array.<number>} correctGuesses Lista di numeri indovinati dall'utente
  */
 const showResults =  (correctGuesses) => {
     let resultsMSG = ""
@@ -371,6 +395,10 @@ I numeri da ricordare erano: ${showNumbersString(numbers)}`;
 
 
 
+/**
+ * Funzione che resetta i parametri di gioco
+ * Richiama la funzione che resetta il tempo rimanente, riazzera la combinazione da ricordare, richiama la funzione che resetta l'interfaccia per la risposta dell'utente, richiama la funzione che resetta i valori inseriti dall'utente, richiama la funzione che resetta e nasconde i risultati
+ */
 const resetGameData = () => {
     setRemainingTime();
     numbers.length = 0;
@@ -391,22 +419,43 @@ const hideUserInterface = () => {
 
 
 
+/**
+ * Funzione che nasconde la pagina iniziale. Nasconde l'header per la navigazione tra gli esercizi e il blocco contenente la descrizione dell'esercizio e la scelta della difficoltà 
+ */
 const hidePageElements = () => {
     pageHeaderElement.classList.add('d-none');
     pageMainElement.classList.add('d-none');
-}
-const showGameScreen = () => {
-    gameScreenElement.classList.remove('d-none');
-    gameScreenElement.classList.add('d-flex');
-}
+};
+
+
+
+/**
+ * Funzione che nasconde la pagina iniziale. Nasconde l'header per la navigazione tra gli esercizi e il blocco contenente la descrizione dell'esercizio e la scelta della difficoltà 
+ */
 const showPageElements = () => {
     pageHeaderElement.classList.remove('d-none');
     pageMainElement.classList.remove('d-none');
-}
+};
+
+
+
+/**
+ * Funzione che mostra la pagina di gioco.
+ */
+const showGameScreen = () => {
+    gameScreenElement.classList.remove('d-none');
+    gameScreenElement.classList.add('d-flex');
+};
+
+
+
+/**
+ * Funzione che nasconde la pagina di gioco.
+ */
 const hideGameScreen = () => {
     gameScreenElement.classList.add('d-none');
     gameScreenElement.classList.remove('d-flex');
-}
+};
 
 
 
@@ -428,6 +477,13 @@ const resetResultsElement = () => {
 
 
 
+/**
+ * Funzione che resetta l'interfaccia per la risposta dell'utente
+ * Rimuove i blocchi contenenti la combinazione da ricordare
+ * Mostra il blocco contenente il countdown
+ * Mostra il blocco contenente le istruzioni di gioco per l'utente
+ * Mostra il blocco che conterrà i nuovi numeri generati
+ */
 const resetUserInterface = () => {
     numbersListElement.innerHTML = '';
     countdownElement.classList.remove('d-none');
@@ -437,12 +493,19 @@ const resetUserInterface = () => {
 
 
 
+/**
+ * Funzione che rimuove gli input per l'inserimento dei valori da parte dell'utente
+ */
 const resetUserValues = () => {
     answersInputGroupElement.innerHTML = ""; 
 };
 
 
 
+/**
+ * Funzione che riceve il tempo a disposizione da impostare a seconda della difficoltà e lo resetta
+ * @param {number} timeToSet Numero di millisecondi a disposizione dell'utente per ricordare la combinazione
+ */
 const setRemainingTime = (timeToSet) => {
     // console.debug(timeToSet);
     remainingTime = timeToSet;
