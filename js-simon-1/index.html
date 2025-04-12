@@ -18,9 +18,6 @@
 
   <!-- STILE GENERALE -->
   <link rel="stylesheet" href="../assets/css/style.css" type="text/css" />
-  <!-- STILE SPECIFICO -->
-  <!-- ? SPOSTARE CONTENUTO IN FILE DI STILE GENERALE? DIPENDE SE ANCHE LE ALTRE VERSIONI LO USANO (QUASI SICURAMENTE) -->
-  <link rel="stylesheet" href="./css/style.css" type="text/css" />
 </head>
 
 <body>
@@ -75,11 +72,11 @@
               la combinazione generata.
             </p>
             <div class="card shadow p-3 mt-5">
-              <h2 class="text-center my-0">
+              <h2 class="text-center mt-0 mb-4">
                 Gioca a Simon says!
               </h2>
-              <div class="my-4">
-                <label for="selectDifficulty" class="form-label">
+              <div class=" mt-0 mb-4">
+                <label for="selectDifficulty" class="form-label fw-bolder">
                   Seleziona la difficoltà a cui vuoi giocare
                 </label>
                 <select name="selectDifficulty" id="selectDifficulty" class="form-select">
@@ -93,9 +90,8 @@
                     Difficile
                   </option>
                 </select>
-                <div id="difficultyDescription">
-
-                </div>
+              </div>
+              <div id="difficultyDescription" class=" mt-0 mb-4">
               </div>
               <button id="startGameButton" class="btn btn-primary">
                 Inizia a giocare
@@ -118,11 +114,13 @@
     </p>
 
     <!-- Numbers -->
-    <ul id="numbers-list" class="d-flex gap-5 list-unstyled"></ul>
+    <ul id="numbers-list" class="d-flex gap-3 list-unstyled"></ul>
+    <!-- <ul id="numbers-list" class="d-flex gap-5 list-unstyled"></ul> -->
 
     <!-- Form -->
     <form id="answers-form" class="d-none">
-      <div class="d-flex gap-5" id="input-group">
+      <div class="d-flex gap-3" id="input-group">
+        <!-- <div class="d-flex gap-5" id="input-group"> -->
         <!-- <input type="number" class="form-control" min="1" max="50" required>
         <input type="number" class="form-control" min="1" max="50" required>
         <input type="number" class="form-control" min="1" max="50" required>

@@ -8,8 +8,35 @@
 
 
 
+
+/**
+ * Funzione che riceve il nome della difficoltà attualmente selezionata dall'utente e ne mostra in pagina i dettagli come n° di elementi da ricordare, range dei numeri generati e tempo a disposizione convertito in secondi 
+ * @param {string} difficultyName 
+ */
+const describeDifficulty = (difficultyName) => {
+    const currentDifficulty = difficulties.find((difficulty) => difficulty.name === difficultyName);
+    // console.debug(currentDifficulty);
+    difficultyDescriptionElement.innerHTML = `
+        <p class="mb-2 fw-bolder">
+            Difficoltà selezionata: ${currentDifficulty.name}
+        </p>
+        <p class="mb-2">
+            Numeri generati: ${currentDifficulty.requestedNumbers}
+        </p>
+        <p class="mb-2">
+            Range di numeri possibili: da ${currentDifficulty.minNumber} a ${currentDifficulty.maxNumber}
+        </p>
+        <p class="mb-0">
+            Tempo a disposizione: ${currentDifficulty.time / 1000} secondi
+        </p>
+    `;
+}
+
+
+
 /**
  * Funzione che fa iniziare il gioco
+ * Imposta la difficoltà scelta
  * Imposta i valori da ricordare
  * Richiama la funzione per mostrare la combinazione da ricordare al giocatore e la funzione che fa partire il timer
  */
@@ -30,6 +57,10 @@ const startGame = () =>{
 
 
 
+/**
+ * Funzione che imposta le variabili del gioco a seconda della difficoltà scelta e ritorna l'oggetto contenente la difficoltà in modo da poterlo salvare per le successive partite (serve per settare il tempo rimanente)
+ * @returns {object} Oggetto contenente la difficoltà scelta dall'utente
+ */
 const setDifficultyLevel = () => {
     const chosenDifficultyName = selectDifficultyElement.value;
     // console.debug(chosenDifficultyName);
@@ -42,8 +73,7 @@ const setDifficultyLevel = () => {
     remainingTime = chosenDifficulty.remainingTime;
 
     return chosenDifficulty;
-}
-
+};
 
 
 
@@ -89,14 +119,14 @@ const showNumbers = (numbersToShow) => {
     // console.debug(numbersListElement);
 
     numbersToShow.forEach(number => {
-        const numberHTMLElement = document.createElement('div');
-        numberHTMLElement.className = 'shownNumber d-flex justify-content-center align-items-center border border-1 border-dark-subtle rounded';
-        numberHTMLElement.innerHTML = `
-        <span>
+        const numberListElement = document.createElement('li');
+        numberListElement.className = 'shownNumber border border-1 border-dark-subtle rounded';
+        numberListElement.innerHTML = `
+        <div class="d-flex justify-content-center align-items-center h-100">
             ${number}
-        </span>
+        </div>
         `;
-        numbersListElement.appendChild(numberHTMLElement);
+        numbersListElement.appendChild(numberListElement);
     });
 };
 
@@ -195,12 +225,13 @@ const showNumbersString =  (numbersToShow) => {
  * Controlla quindi che i valori non siano vuoti, non contengano caratteri, non siano inseriti due volte, non siano maggiori del valore massimo e non siano inferiori al valore minimo
  * @returns {boolean} Valore che indica se tutti i valori inseriti dall'utente sono accettabili e se è possibile procedere al confronto con i valori generati
  */
-const validateUserAnswer =  () => {
+const validateUserAnswer =  (answerInputs) => {
     let isValid = true;
     let answerValues = [];
     errorMessageElement.innerText = "";
     let errorMSG = "";
 
+    // console.debug(answerInputs);
     answerInputs.forEach(inputElement => {
 
         // console.debug(inputElement);
@@ -261,7 +292,7 @@ const setErrorInput = (input) => {
  * Funzione che controlla i valori inseriti dall'utente (Lanciata solo se la validazione lo permette)
  * Richiama la funzione per mostrare il risultato e la funzione per nascondere gli input dell'utente.
  */
-const checkAnswer =  (numbers) => {
+const checkAnswer =  (answerInputs, numbers) => {
 
     // console.debug(answerInputs);
 

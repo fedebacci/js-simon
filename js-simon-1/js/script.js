@@ -33,7 +33,7 @@ const difficulties = [
         minNumber: 1,
         time: 5000,
     }
-]
+];
 
 
 
@@ -50,10 +50,8 @@ const gameScreenElement = document.getElementById('gameScreenElement');
 const numbersListElement = document.getElementById('numbers-list');
 const countdownElement = document.getElementById('countdown');
 const instructionsElement = document.getElementById('instructions');
-// ? FORSE NON SERVE PERCHE USO QUELLO SOTTO
 const answersFormElement = document.getElementById('answers-form');
 const answersInputGroupElement = document.getElementById('input-group');
-const answerInputs = answersFormElement.querySelectorAll('input');
 const errorMessageElement = document.getElementById('message');
 const resultsElement = document.getElementById('results');
 
@@ -64,7 +62,15 @@ const startGameButton = document.getElementById('startGameButton');
 startGameButton.addEventListener('click', startGame);
 const confirmButton = document.getElementById('confirmButton');
 confirmButton.addEventListener('click', function(e) {
+    const answerInputs = answersInputGroupElement.querySelectorAll('input');
     if (!resultsElement.classList.contains('d-none')) resetResultsElement();
-    const isAnswerValid = validateUserAnswer();
-    if (isAnswerValid === true) checkAnswer(numbers);
+    const isAnswerValid = validateUserAnswer(answerInputs);
+    if (isAnswerValid === true) checkAnswer(answerInputs, numbers);
 });
+selectDifficultyElement.addEventListener('change', function(e) {
+    describeDifficulty(e.target.value);
+});
+
+
+
+describeDifficulty(selectDifficultyElement.value);
