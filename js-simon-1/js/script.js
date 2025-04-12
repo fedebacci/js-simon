@@ -8,12 +8,41 @@
 
 
 
+// # NUOVE VARIABILI PER LA SELEZIONE DELLA DIFFICOLTA
+const selectDifficultyElement = document.getElementById('selectDifficulty');
+const difficultyDescriptionElement = document.getElementById('difficultyDescription');
+const difficulties = [
+    {
+        name: 'facile',
+        requestedNumbers: 3,
+        maxNumber: 20,
+        minNumber: 1,
+        time: 30000,
+    },
+    {
+        name: 'medio',
+        requestedNumbers: 5,
+        maxNumber: 50,
+        minNumber: 1,
+        time: 15000,
+    },
+    {
+        name: 'difficile',
+        requestedNumbers: 7,
+        maxNumber: 100,
+        minNumber: 1,
+        time: 5000,
+    }
+]
+
+
+
 // * VARIABILI NOTE DEL GIOCO
-const requestedNubers = 5;
-const maxNumber = 50;
-const minNumber = 1;
-const numbers = [];
+let requestedNumbers = 0;
+let maxNumber = 0;
+let minNumber = 0;
 let remainingTime = 0;
+const numbers = [];
 let countdownIntervalId;
 const pageHeaderElement = document.querySelector('header');
 const pageMainElement = document.querySelector('main');
@@ -21,7 +50,9 @@ const gameScreenElement = document.getElementById('gameScreenElement');
 const numbersListElement = document.getElementById('numbers-list');
 const countdownElement = document.getElementById('countdown');
 const instructionsElement = document.getElementById('instructions');
+// ? FORSE NON SERVE PERCHE USO QUELLO SOTTO
 const answersFormElement = document.getElementById('answers-form');
+const answersInputGroupElement = document.getElementById('input-group');
 const answerInputs = answersFormElement.querySelectorAll('input');
 const errorMessageElement = document.getElementById('message');
 const resultsElement = document.getElementById('results');
@@ -37,8 +68,3 @@ confirmButton.addEventListener('click', function(e) {
     const isAnswerValid = validateUserAnswer();
     if (isAnswerValid === true) checkAnswer(numbers);
 });
-
-
-
-// * CHIAMO LA FUNZIONE PER FAR INIZIARE IL GIOCO
-// startGame();

@@ -15,15 +15,36 @@
  */
 const startGame = () =>{
     console.debug('Game started');
+
+    const difficulty = setDifficultyLevel();
+
     hidePageElements();
     showGameScreen();
-    generateCombination(requestedNubers, maxNumber, minNumber);
-    setRemainingTime();
+    generateCombination(requestedNumbers, maxNumber, minNumber);
+    setRemainingTime(difficulty.time);
 
-    console.debug(numbers)
+    console.debug(numbers);
     showNumbers(numbers);
     startTimer();
 }
+
+
+
+const setDifficultyLevel = () => {
+    const chosenDifficultyName = selectDifficultyElement.value;
+    // console.debug(chosenDifficultyName);
+    const chosenDifficulty = difficulties.find((difficulty) => difficulty.name === chosenDifficultyName);
+    // console.debug(chosenDifficulty);
+
+    requestedNumbers = chosenDifficulty.requestedNumbers;
+    maxNumber = chosenDifficulty.maxNumber;
+    minNumber = chosenDifficulty.minNumber;
+    remainingTime = chosenDifficulty.remainingTime;
+
+    return chosenDifficulty;
+}
+
+
 
 
 
@@ -117,6 +138,7 @@ const decreaseTimer = () => {
         showTimeLeft();
     } else {
         hideCountdown();
+        // console.debug(requestedNumbers);
         showAnswersForm();
         clearInterval(countdownIntervalId);
         countdownIntervalId = undefined;
@@ -139,7 +161,15 @@ const hideCountdown =  () => {
  * Funzione che modifica le istruzioni e mostra all'utente il form per inserire i numeri che si ricordano
  */
 const showAnswersForm =  () => {
-    instructionsElement.innerText = `Inserisci i numeri (L'ordine non è importante)`
+    instructionsElement.innerText = `Inserisci i numeri (L'ordine non è importante)`;
+    for (let i = 0; i < requestedNumbers; i ++) {
+        const newAnswerInput = document.createElement('input');
+        newAnswerInput.type = 'number';
+        newAnswerInput.min = minNumber;
+        newAnswerInput.max = maxNumber;
+        newAnswerInput.classList.add('form-control');
+        answersInputGroupElement.appendChild(newAnswerInput);
+    };
     answersFormElement.classList.remove('d-none');
 };
 
@@ -377,13 +407,12 @@ const resetUserInterface = () => {
 
 
 const resetUserValues = () => {
-    answerInputs.forEach(inputElement => {
-        inputElement.value = "";
-    });    
+    answersInputGroupElement.innerHTML = ""; 
 };
 
 
 
-const setRemainingTime = () => {
-    remainingTime = 3000;
+const setRemainingTime = (timeToSet) => {
+    // console.debug(timeToSet);
+    remainingTime = timeToSet;
 };
