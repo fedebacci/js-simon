@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Esercizio 11/04/2025 - Federico Bacci - Boolean corso Web Development classe #144</title>
+
+    <meta name="description" content="Esercizio n°29 (11/04/2025): JS Simon - Generazione di una combinazione casuale, ricezione da parte di una combinazione da parte dell'utente e confronto tra le due. 
+  Studente: Federico Bacci. 
+  Corso: Boolean corso Web Development classe #144">
+
+    <!-- FONT AWESOME 6.7.2 CDN -->
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" /> -->
+
+    <!-- BOOTSTRAP 5.3.3 CDN (CSS) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+    <!-- CUSTOM CSS -->
+    <link rel="stylesheet" href="./assets/css/style.css">
+</head>
+
+<body>
+
+    <header>
+        <nav class="navbar navbar-expand-lg bg-dark border-bottom border-body" data-bs-theme="dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="/">
+                    FB
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link" aria-current="page" href="/">
+                                Home
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" aria-current="page" href="/js-simon-1/index.html">
+                                JS Simon 1
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="/js-simon-2/index.html">
+                                JS Simon 2
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section>
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <h1>
+                            JS Simon 2
+                        </h1>
+                        <p>
+                            Scelta da parte dell'utente del tipo di combinazione da ricordare (numeri, lettere, colori).
+                        </p>
+                        <p>
+                            Generazione di una combinazione che sparisce allo scadere di un timer.
+                        </p>
+                        <p>
+                            Quando il timer è scaduto richiesta all'utente di inserimento della combinazione vista, da
+                            confrontare con
+                            la combinazione generata.
+                        </p>
+
+
+
+
+                        <div class="card shadow p-3 mt-5">
+                            <h2 class="text-center mt-0 mb-4">
+                                Gioca a Simon says!
+                            </h2>
+                            <div class=" mt-0 mb-4">
+                                <label for="selectCombinationType" class="form-label fw-bolder">
+                                    Seleziona il tipo di combinazione con cui cui vuoi giocare
+                                </label>
+                                <select name="selectCombinationType" id="selectCombinationType" class="form-select">
+                                </select>
+                            </div>
+                            <!-- <div id="combinationTypeDescription" class=" mt-0 mb-4">
+                            </div> -->
+                            <div class=" mt-0 mb-4">
+                                <label for="selectDifficulty" class="form-label fw-bolder">
+                                    Seleziona la difficoltà a cui vuoi giocare
+                                </label>
+                                <select name="selectDifficulty" id="selectDifficulty" class="form-select">
+                                </select>
+                            </div>
+                            <div id="difficultyDescription" class=" mt-0 mb-4">
+                            </div>
+                            <button id="startGameButton" class="btn btn-primary">
+                                Inizia a giocare
+                            </button>
+                        </div>
+
+
+
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+
+
+
+
+    <div id="gameScreenElement"
+        class="d-none vh-100 m-auto d-flex justify-content-center align-items-center flex-column">
+        <!-- Countdown -->
+        <div id="countdown" class="fs-1 fw-bolder">
+        </div>
+        <p id="instructions">
+            Memorizza la combinazione entro il tempo limite!
+        </p>
+
+        <!-- Combination -->
+        <ul id="combination-list" class="d-flex gap-3 list-unstyled"></ul>
+
+        <!-- Form -->
+        <form id="answers-form" class="d-none">
+            <div class="d-flex gap-3" id="input-group">
+            </div>
+            <button type="button" id="confirmButton" class="btn btn-primary mt-2 d-block mx-auto">
+                Conferma
+            </button>
+            <p class="text-danger text-center" id="message">
+            </p>
+        </form>
+
+        <div id="results" class="card shadow mt-4 p-4 d-none">
+        </div>
+    </div>
+
+
+
+
+
+
+    <!-- BOOTSTRAP 5.3.3 CDN (JS) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+
+    <!-- CUSTOM JS -->
+    <script src="./assets/js/combination-types.js"></script>
+    <script src="./assets/js/difficulties.js"></script>
+    <script src="./assets/js/functions.js"></script>
+    <script src="./assets/js/script.js"></script>
+</body>
+
+</html>
