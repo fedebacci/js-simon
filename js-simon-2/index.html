@@ -132,23 +132,23 @@
         <ul id="combination-list" class="d-flex gap-3 list-unstyled"></ul>
 
         <!-- Form -->
-        <form id="answers-form" class="d-none">
-            <div class="container">
-                <div class="col-12">
+        <div class="container">
+            <div class="col-12">
+                <form id="answers-form" class="d-none">
                     <div class="d-flex gap-3 flex-wrap justify-content-center d-none mb-4" id="colorsOptions">
                     </div>
-                </div>
-                <div class="col-12">
+                    <!-- </div>
+                <div class="col-12"> -->
                     <div class="d-flex gap-3 justify-content-center" id="input-group">
                     </div>
-                </div>
+                    <button type="button" id="confirmButton" class="btn btn-primary mt-2 d-block mx-auto">
+                        Conferma
+                    </button>
+                    <p class="text-danger text-center" id="message">
+                    </p>
+                </form>
             </div>
-            <button type="button" id="confirmButton" class="btn btn-primary mt-2 d-block mx-auto">
-                Conferma
-            </button>
-            <p class="text-danger text-center" id="message">
-            </p>
-        </form>
+        </div>
 
         <div id="results" class="card shadow mt-4 p-4 d-none">
         </div>
