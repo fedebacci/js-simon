@@ -117,9 +117,10 @@ const generateCombination = () => {
         if (combinationType.value === 'numbers') {
             newElement = generateRandomNumber(1, difficulty.possibleOptions);
         } else {
-            newElement = generateRandomElement(1, difficulty.possibleOptions);
+            newElement = generateRandomElement(0, difficulty.possibleOptions - 1);
         }
-        if (combination.includes(newElement) === false) combination.push(newElement);
+        // todo: CONTROLLARE FUNZIONE CHE FORSE GENERA VALORI UNDEFINED (VISTO PER I COLORI)
+        if (combination.includes(newElement) === false && newElement !== undefined) combination.push(newElement);
     };
 
     console.debug(combination);
@@ -176,6 +177,220 @@ const decreaseTimer = () => {
         clearInterval(countdownIntervalId);
         countdownIntervalId = undefined;
     };
+};
+
+
+
+
+// ! FUNZIONI PER LA GESTIONE DEGLI INPUT COLORATI
+const focusFakeInput = (fakeInputToFocus) => {
+    const otherFocused = document.querySelector('.focused');
+    // console.debug(otherFocused);
+    if (otherFocused) {
+        otherFocused.classList.remove('focused');
+        otherFocused.classList.add('border');
+    }
+    if (fakeInputToFocus.classList.contains('border-danger')) fakeInputToFocus.classList.remove('border-danger');
+    fakeInputToFocus.classList.add('focused');
+    fakeInputToFocus.classList.remove('border');
+};
+const selectThisColor = (colorToSelect) => {
+    // console.debug(colorToSelect);
+    const selectedFakeInputContainer = document.querySelector('.focused');
+    // console.debug(selectedFakeInputContainer);
+    if (!selectedFakeInputContainer) return;
+
+    // const selectedFakeInput = document.querySelector('.focused > .answerFakeInput');
+    const selectedFakeInput = selectedFakeInputContainer.querySelector('.answerFakeInput');
+    // console.debug(selectedFakeInput);
+
+    if (!selectedFakeInput) return;
+
+    selectedFakeInput.style.backgroundColor = colorToSelect;
+    const corrispondingInput = document.querySelector('.focused + input');
+    corrispondingInput.value = rgbToHex(colorToSelect);
+    // console.debug(corrispondingInput);
+    // console.debug(corrispondingInput.value);
+
+    selectedFakeInputContainer.classList.remove('focused');
+    corrispondingInput.classList.add('inserted');
+    selectedFakeInputContainer.classList.add('inserted');
+};
+const rgbToHex = (colorToConvert) => {
+    // console.debug("colorToConvert", colorToConvert);
+    if(colorToConvert.charAt(0) === 'r') {
+        colorToConvert = colorToConvert.replace('rgb(','').replace(')','').split(',');
+        var r = parseInt(colorToConvert[0], 10).toString(16);
+        var g = parseInt(colorToConvert[1], 10).toString(16);
+        var b = parseInt(colorToConvert[2], 10).toString(16);
+        r = r.length === 1 ? '0' + r : r; 
+        g = g.length === 1 ? '0' + g : g; 
+        b = b.length === 1 ? '0' + b : b;
+        var colorToConvertHex = '#' + r + g + b;
+        // console.debug("colorToConvertHex:", colorToConvertHex)
+        return colorToConvertHex;
+    }
+};
+
+
+
+/**
+ * Funzione che controlla che i valori inseriti dall'utente siano valori numerici non duplicati compresi tra il numero massimo e il numero minimo
+ * Controlla quindi che i valori non siano vuoti, non contengano caratteri, non siano inseriti due volte, non siano maggiori del valore massimo e non siano inferiori al valore minimo
+ * @returns {boolean} Valore che indica se tutti i valori inseriti dall'utente sono accettabili e se è possibile procedere al confronto con i valori generati
+ */
+const validateUserAnswer =  (answerInputs) => {
+
+    if (combinationType.value === 'numbers') {
+        isValid = validateNumbersCombination(answerInputs, 1, difficulty.possibleOptions);
+    } else if (combinationType.value === 'letters') {
+        isValid = validateLettersCombination(answerInputs);
+    } else {
+        isValid = validateColorsCombination(answerInputs);
+    }
+    
+    // ! DEBUG
+    // answerInputs.forEach(inputElement => {
+    //     console.debug(inputElement);
+    //     console.debug(inputElement.value);
+    // })
+    
+    console.warn(isValid);
+    return isValid;
+};
+const validateNumbersCombination = (inputsToValidate, minNumber, maxNumber) => {
+    // console.debug(inputsToValidate);
+    // todo: CAPIRE COSA SI PUO PORTARE FUORI NELLA FUNZIONE validateUserAnswer
+    let isValid = true;
+    let answerValues = [];
+    errorMessageElement.innerText = "";
+    let errorMSG = "";
+
+    inputsToValidate.forEach(inputElement => {
+        // console.debug(inputElement.value.length);
+        // console.debug(parseInt(inputElement.value));
+
+        switch(true) {
+            case inputElement.value.length === 0:
+                isValid = false;
+                errorMSG += "Almeno un input è vuoto o contiene un valore non numerico. Inserisci un numero in ciascun input.\n";
+                setErrorInput(inputElement);
+                // inputElement.value = minNumber;
+                break;
+            case parseInt(inputElement.value) < minNumber:
+                isValid = false;
+                errorMSG += `Il numero ${inputElement.value} è minore del numero minimo: ${minNumber}. Inserisci un numero maggiore o uguale a ${minNumber}.\n`;
+                setErrorInput(inputElement);
+                // input.value = minNumber;
+                break;  
+            case parseInt(inputElement.value) > maxNumber:
+                isValid = false;
+                errorMSG += `Il numero ${inputElement.value} è maggiore del numero massimo: ${maxNumber}. Inserisci un numero minore o uguale a ${maxNumber}.\n`;
+                setErrorInput(inputElement);
+                // input.value = maxNumber;
+                break;  
+            case answerValues.includes(parseInt(inputElement.value)) === true:
+                isValid = false;
+                errorMSG += `Il numero ${inputElement.value} si ripete. Inserisci un numero diverso in ciascun input.\n`;
+                setErrorInput(inputElement);
+                break;
+            default:
+                if (inputElement.classList.contains('border-danger')) inputElement.classList.remove('border-danger');
+                answerValues.push(parseInt(inputElement.value));
+                break;  
+        };
+    });
+
+    // console.debug(errorMessageElement);
+    // console.debug(errorMSG);
+    if (isValid === false) errorMessageElement.innerText = errorMSG;
+    return isValid;
+};
+
+const validateLettersCombination = (inputsToValidate) => {
+    console.debug(inputsToValidate);
+    // todo: CAPIRE COSA SI PUO PORTARE FUORI NELLA FUNZIONE validateUserAnswer
+    let isValid = true;
+    let answerValues = [];
+    errorMessageElement.innerText = "";
+    let errorMSG = "";
+
+    inputsToValidate.forEach(inputElement => {
+        // console.debug(inputElement.value);
+        // console.debug(answerValues);
+        // console.debug(inputElement.value.length);
+        // console.debug(parseInt(inputElement.value));
+
+        switch(true) {
+            case inputElement.value.length === 0:
+                isValid = false;
+                errorMSG += "Almeno un input è vuoto. Inserisci una lettera in ciascun input.\n";
+                setErrorInput(inputElement);
+                break;
+            case inputElement.value.length > 1:
+                isValid = false;
+                errorMSG += "Almeno un input contiene più caratteri. Inserisci una lettera in ciascun input.\n";
+                setErrorInput(inputElement);
+                break;
+            case !isNaN(parseInt(inputElement.value)):
+                isValid = false;
+                errorMSG += `Un input contiene il numero ${inputElement.value} al posto di una lettera! Inserisci una lettera in ciascun input.\n`;
+                setErrorInput(inputElement);
+                break;  
+            case answerValues.includes(inputElement.value) === true:
+                isValid = false;
+                errorMSG += `La lettera ${inputElement.value} si ripete. Inserisci una lettera diversa in ciascun input.\n`;
+                setErrorInput(inputElement);
+                break;
+            default:
+                if (inputElement.classList.contains('border-danger')) inputElement.classList.remove('border-danger');
+                answerValues.push(inputElement.value);
+                break;  
+        };
+    });
+
+    // console.debug(errorMessageElement);
+    // console.debug(errorMSG);
+    if (isValid === false) errorMessageElement.innerText = errorMSG;
+    return isValid;
+};
+const validateColorsCombination = (inputsToValidate) => {
+    console.debug(inputsToValidate);
+    // todo: CAPIRE COSA SI PUO PORTARE FUORI NELLA FUNZIONE validateUserAnswer
+    let isValid = true;
+    let answerValues = [];
+    errorMessageElement.innerText = "";
+    let errorMSG = "";
+
+    inputsToValidate.forEach(inputElement => {
+        // console.debug(answerValues);
+        // console.debug(inputElement.value);
+        // console.debug(inputElement.value.length);
+        // console.debug(parseInt(inputElement.value));
+
+        switch(true) {
+            case !inputElement.classList.contains('inserted'):
+                isValid = false;
+                errorMSG += "Almeno un input è vuoto. Inserisci un colore in ciascun input.\n";
+                // console.debug('inputElement', inputElement)
+                setErrorInput(inputElement);
+                break;
+            case answerValues.includes(inputElement.value) === true:
+                isValid = false;
+                errorMSG += `Un colore si ripete. Inserisci un colore diverso in ciascun input.\n`;
+                setErrorInput(inputElement);
+                break;
+            default:
+                if (inputElement.classList.contains('border-danger')) inputElement.classList.remove('border-danger');
+                answerValues.push(inputElement.value);
+                break;  
+        };
+    });
+
+    // console.debug(errorMessageElement);
+    // console.debug(errorMSG);
+    if (isValid === false) errorMessageElement.innerText = errorMSG;
+    return isValid;
 };
 
 
@@ -287,15 +502,20 @@ const showAnswersForm =  () => {
             newAnswerInput.classList.add('form-control');
         } else {
             newAnswerInput.type = 'color';
-            // ? FORSE DATA-ID NON SERVE
+            // ! DATA-ID NON SERVE PER L'INSERIMENTO DEL COLORE
+            // ? FORSE INVECE MI SERVE PER MOSTRARE QUALE FAKE INPUT E SBAGLIATO NELLA VALIDAZIONE
             newAnswerInput.dataset.id = i + 1;
             newAnswerInput.classList.add('d-none');
             const newAnswerFakeInputContainer = document.createElement('div');
             newAnswerFakeInputContainer.className = 'border rounded p-1';
+            // ! DATA-ID NON SERVE PER L'INSERIMENTO DEL COLORE
+            // ? FORSE INVECE MI SERVE PER MOSTRARE QUALE FAKE INPUT E SBAGLIATO NELLA VALIDAZIONE
+            newAnswerFakeInputContainer.dataset.id = i + 1;
             const newAnswerFakeInput = document.createElement('div');
             newAnswerFakeInput.className = 'answerFakeInput border rounded';
-            // ? FORSE DATA-ID NON SERVE
-            newAnswerFakeInput.dataset.id = i + 1;
+            // ! DATA-ID NON SERVE PER L'INSERIMENTO DEL COLORE
+            // ? FORSE INVECE MI SERVE PER MOSTRARE QUALE FAKE INPUT E SBAGLIATO NELLA VALIDAZIONE, MA PER IL CONTAINER
+            // newAnswerFakeInput.dataset.id = i + 1;
             newAnswerFakeInputContainer.appendChild(newAnswerFakeInput);
             answersInputGroupElement.appendChild(newAnswerFakeInputContainer);
             answersInputGroupElement.appendChild(newAnswerInput);
@@ -316,6 +536,7 @@ const showAnswersForm =  () => {
 
 // ! FUNZIONI PER LA GESTIONE DEGLI INPUT COLORATI
 const showColorsOptions = () => {
+    // console.debug(difficulty.possibleOptions);
     for (let i = 0; i < difficulty.possibleOptions; i ++) {
         const newColorOption = document.createElement('div');
         newColorOption.className = 'colorOption border rounded';
@@ -329,42 +550,27 @@ const showColorsOptions = () => {
     }
     colorsOptionsElement.classList.remove('d-none');
 };
-const focusFakeInput = (fakeInputToFocus) => {
-    const testOthers = document.querySelector('.focused');
-    // console.debug(testOthers);
-    if (testOthers) testOthers.classList.remove('focused');
-    fakeInputToFocus.classList.add('focused');
-};
-const selectThisColor = (colorToSelect) => {
-    // console.debug(colorToSelect);
-    const selectedFakeInput = document.querySelector('.focused > .answerFakeInput');
-    
-    if (!selectedFakeInput) return;
 
-    // console.debug(selectedFakeInput);
-    selectedFakeInput.style.backgroundColor = colorToSelect;
-    const corrispondingInput = document.querySelector('.focused + input');
-    corrispondingInput.value = rgbToHex(colorToSelect);
-    // console.debug(corrispondingInput);
-    // console.debug(corrispondingInput.value);
-};
-const rgbToHex = (colorToConvert) => {
-    // console.debug("colorToConvert", colorToConvert);
-    if(colorToConvert.charAt(0)=='r') {
-        colorToConvert=colorToConvert.replace('rgb(','').replace(')','').split(',');
-        var r=parseInt(colorToConvert[0], 10).toString(16);
-        var g=parseInt(colorToConvert[1], 10).toString(16);
-        var b=parseInt(colorToConvert[2], 10).toString(16);
-        r=r.length==1?'0'+r:r; 
-        g=g.length==1?'0'+g:g; 
-        b=b.length==1?'0'+b:b;
-        var colorToConvertHex='#'+r+g+b;
-        // console.debug("colorToConvertHex:", colorToConvertHex)
-        return colorToConvertHex;
+
+
+/**
+ * Funzione che segnala un input erroneo aggiungendo la classe di Bootstrap .border-danger
+ * @param {input} input Elemento HTML da segnalare come erroneo
+ */
+const setErrorInput = (input) => {
+    // console.debug("input erroneo:", input);
+    // console.debug("combinationType", combinationType);
+    if (combinationType.value === 'colors') {
+        const correspondingFakeInput = document.querySelector(`[data-id="${input.dataset.id}"`);
+        console.debug("correspondingFakeInput", correspondingFakeInput);
+        correspondingFakeInput.classList.remove('inserted');
+        correspondingFakeInput.classList.add('border');
+        correspondingFakeInput.classList.add('border-danger');
+        input.classList.remove('inserted');
+    } else {
+        input.classList.add('border-danger');
     }
 };
-
-
 
 
 

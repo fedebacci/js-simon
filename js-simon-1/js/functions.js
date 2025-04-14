@@ -234,6 +234,7 @@ const showAnswersForm =  () => {
  */
 const showNumbersString =  (numbersToShow) => {
     let string = "";
+    // todo: USARE METODO join
     numbersToShow.forEach(number => {
         string.length === 0 ? string = number : string = `${string}, ${number}`
     })

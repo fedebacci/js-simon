@@ -43,14 +43,17 @@ const confirmButton = document.getElementById('confirmButton');
 
 // # LISTENERS DI EVENTI
 startGameButton.addEventListener('click', startGame);
-// confirmButton.addEventListener('click', function(e) {
-//     const answerInputs = answersInputGroupElement.querySelectorAll('input');
-//     if (!resultsElement.classList.contains('d-none')) resetResultsElement();
-//     const isAnswerValid = validateUserAnswer(answerInputs);
-//     if (isAnswerValid === true) checkAnswer(answerInputs, numbers);
-// });
+confirmButton.addEventListener('click', function(e) {
+    const answerInputs = answersInputGroupElement.querySelectorAll('input');
+    // console.debug(answerInputs);
+    // if (!resultsElement.classList.contains('d-none')) resetResultsElement();
+    const isAnswerValid = validateUserAnswer(answerInputs);
+    console.debug(isAnswerValid);
+    // if (isAnswerValid === true) checkAnswer(answerInputs, numbers);
+});
 selectCombinationTypeElement.addEventListener('change', function(e) {
     combinationType = getCombinationType(e.target.value);
+    difficulty = getDifficulty(selectDifficultyElement.value);
     removeDifficultyOptions();
     // describeCombinationType();
     showDifficultyOptions();

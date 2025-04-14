@@ -47,5 +47,10 @@ section {
 }
 
 .focused {
-    border-color: rgb(57, 148, 179) !important;
+    /* border-color: rgb(57, 148, 179); */
+    border: 1px solid rgb(57, 148, 179);
+}
+.inserted {
+    /* border-color: black; */
+    border: 1px solid black;
 }
