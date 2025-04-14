@@ -29,6 +29,7 @@ const combinationListElement = document.getElementById('combination-list');
 const countdownElement = document.getElementById('countdown');
 const instructionsElement = document.getElementById('instructions');
 const answersFormElement = document.getElementById('answers-form');
+const colorsOptionsElement = document.getElementById('colorsOptions');
 const answersInputGroupElement = document.getElementById('input-group');
 const errorMessageElement = document.getElementById('message');
 const resultsElement = document.getElementById('results');

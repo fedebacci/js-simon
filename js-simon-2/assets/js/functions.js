@@ -89,8 +89,8 @@ const setDifficultyLevel = () => {
 const startGame = () => {
     console.clear();
     // console.debug('GAME STARTED');
-    // console.debug('combinationType', combinationType);
-    // console.debug('difficulty', difficulty);
+    console.debug('combinationType', combinationType);
+    console.debug('difficulty', difficulty);
 
     // * FUNZIONI PER LOGICA DI GIOCO
     setDifficultyLevel();
@@ -109,8 +109,8 @@ const startGame = () => {
 
 
 const generateCombination = () => {
-    console.debug('combinationType', combinationType);
-    console.debug('difficulty', difficulty);
+    // console.debug('combinationType', combinationType);
+    // console.debug('difficulty', difficulty);
 
     while (combination.length < combinationLength) {
         let newElement;
@@ -274,14 +274,104 @@ const hideCountdown =  () => {
 const showAnswersForm =  () => {
     instructionsElement.innerText = `Inserisci la combinazione (L'ordine non è importante)`;
 
-    // todo: GESTIRE INPUT DIVERSI A SECONDA DEL TIPO DI COMBINAZIONE combinationType
     for (let i = 0; i < combinationLength; i ++) {
         const newAnswerInput = document.createElement('input');
-        // newAnswerInput.type = 'number';
-        // newAnswerInput.min = minNumber;
-        // newAnswerInput.max = maxNumber;
-        newAnswerInput.classList.add('form-control');
+
+        if (combinationType.value === 'numbers') {
+            newAnswerInput.type = 'number';
+            newAnswerInput.min = 1;
+            newAnswerInput.max = difficulty.possibleOptions;
+            newAnswerInput.classList.add('form-control');
+        } else if (combinationType.value === 'letters') {
+            newAnswerInput.type = 'text';
+            newAnswerInput.classList.add('form-control');
+        } else {
+            newAnswerInput.type = 'color';
+            // ? FORSE DATA-ID NON SERVE
+            newAnswerInput.dataset.id = i + 1;
+            newAnswerInput.classList.add('d-none');
+            const newAnswerFakeInputContainer = document.createElement('div');
+            newAnswerFakeInputContainer.className = 'border rounded p-1';
+            const newAnswerFakeInput = document.createElement('div');
+            newAnswerFakeInput.className = 'answerFakeInput border rounded';
+            // ? FORSE DATA-ID NON SERVE
+            newAnswerFakeInput.dataset.id = i + 1;
+            newAnswerFakeInputContainer.appendChild(newAnswerFakeInput);
+            answersInputGroupElement.appendChild(newAnswerFakeInputContainer);
+            answersInputGroupElement.appendChild(newAnswerInput);
+            newAnswerFakeInputContainer.addEventListener('click', function (e) {
+                focusFakeInput(e.target);
+            });
+        };
+
         answersInputGroupElement.appendChild(newAnswerInput);
     };
+
+    if (combinationType.value === 'colors') showColorsOptions();
     answersFormElement.classList.remove('d-none');
 };
+
+
+
+
+// ! FUNZIONI PER LA GESTIONE DEGLI INPUT COLORATI
+const showColorsOptions = () => {
+    for (let i = 0; i < difficulty.possibleOptions; i ++) {
+        const newColorOption = document.createElement('div');
+        newColorOption.className = 'colorOption border rounded';
+        newColorOption.style.backgroundColor = combinationType.options[i];
+        // console.debug("newColorOption.style.backgroundColor", newColorOption.style.backgroundColor);
+
+        newColorOption.addEventListener('click', function (e) {
+            selectThisColor(e.target.style.backgroundColor);
+        });
+        colorsOptionsElement.appendChild(newColorOption);
+    }
+    colorsOptionsElement.classList.remove('d-none');
+};
+const focusFakeInput = (fakeInputToFocus) => {
+    const testOthers = document.querySelector('.focused');
+    // console.debug(testOthers);
+    if (testOthers) testOthers.classList.remove('focused');
+    fakeInputToFocus.classList.add('focused');
+};
+const selectThisColor = (colorToSelect) => {
+    // console.debug(colorToSelect);
+    const selectedFakeInput = document.querySelector('.focused > .answerFakeInput');
+    
+    if (!selectedFakeInput) return;
+
+    // console.debug(selectedFakeInput);
+    selectedFakeInput.style.backgroundColor = colorToSelect;
+    const corrispondingInput = document.querySelector('.focused + input');
+    corrispondingInput.value = rgbToHex(colorToSelect);
+    // console.debug(corrispondingInput);
+    // console.debug(corrispondingInput.value);
+};
+const rgbToHex = (colorToConvert) => {
+    // console.debug("colorToConvert", colorToConvert);
+    if(colorToConvert.charAt(0)=='r') {
+        colorToConvert=colorToConvert.replace('rgb(','').replace(')','').split(',');
+        var r=parseInt(colorToConvert[0], 10).toString(16);
+        var g=parseInt(colorToConvert[1], 10).toString(16);
+        var b=parseInt(colorToConvert[2], 10).toString(16);
+        r=r.length==1?'0'+r:r; 
+        g=g.length==1?'0'+g:g; 
+        b=b.length==1?'0'+b:b;
+        var colorToConvertHex='#'+r+g+b;
+        // console.debug("colorToConvertHex:", colorToConvertHex)
+        return colorToConvertHex;
+    }
+};
+
+
+
+
+
+/**
+ * Funzione che nasconde le istruzioni per l'utente e il form per l'inserimento delle risposte
+ */
+const hideUserInterface = () => {
+    instructionsElement.classList.add('d-none');
+    answersFormElement.classList.add('d-none');
+}
