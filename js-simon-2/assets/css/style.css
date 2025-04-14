@@ -45,6 +45,13 @@ section {
     width: 2rem;
     height: 2rem;
 }
+.resultElementContainer {
+    display: inline-block;
+    width: 1.5rem;
+    height: 1.5rem;
+    padding: .1rem;
+    background-color: #fff;
+}
 
 .focused {
     /* border-color: rgb(57, 148, 179); */

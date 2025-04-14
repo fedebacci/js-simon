@@ -49,7 +49,7 @@ confirmButton.addEventListener('click', function(e) {
     // if (!resultsElement.classList.contains('d-none')) resetResultsElement();
     const isAnswerValid = validateUserAnswer(answerInputs);
     console.debug(isAnswerValid);
-    // if (isAnswerValid === true) checkAnswer(answerInputs, numbers);
+    if (isAnswerValid === true) checkAnswer(answerInputs, combination);
 });
 selectCombinationTypeElement.addEventListener('change', function(e) {
     combinationType = getCombinationType(e.target.value);

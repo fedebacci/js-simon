@@ -395,6 +395,76 @@ const validateColorsCombination = (inputsToValidate) => {
 
 
 
+/**
+ * Funzione che controlla i valori inseriti dall'utente (Lanciata solo se la validazione lo permette)
+ * Richiama la funzione per mostrare il risultato e la funzione per nascondere gli input dell'utente.
+ */
+const checkAnswer =  (answerInputs, combination) => {
+
+    // console.debug(answerInputs);
+
+    const correctGuesses = [];
+    const wrongGuesses = [];
+
+    // console.debug("combination", combination);
+
+    answerInputs.forEach(inputElement => {
+        // console.debug(inputElement.value);
+        // console.debug(inputElement.value.length);
+        let currentValue = inputElement.value;
+        if (combinationType.value === 'numbers') currentValue = parseInt(currentValue);
+        // console.debug("currentValue", currentValue);
+        const isCorrect = checkValue(combination, currentValue);
+        isCorrect === true ? correctGuesses.push(currentValue) : wrongGuesses.push(currentValue);
+    })
+
+    console.debug("combination", combination);
+    console.debug("correctGuesses", correctGuesses);
+    console.debug("wrongGuesses", wrongGuesses);
+    showResults(correctGuesses, wrongGuesses);
+    hideUserInterface();
+};
+const checkValue =  (combination, value) => {
+    // console.debug(value);
+    return combination.includes(value);
+};
+
+
+
+/**
+ * Funzione che resetta i parametri di gioco
+ * Richiama la funzione che resetta il tempo rimanente, riazzera la combinazione da ricordare, richiama la funzione che resetta l'interfaccia per la risposta dell'utente, richiama la funzione che resetta i valori inseriti dall'utente, richiama la funzione che resetta e nasconde i risultati
+ */
+const resetGameData = () => {
+    setRemainingTime();
+    combination.length = 0;
+    resetUserInterface();
+    resetUserValues();
+    resetResultsElement();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -581,3 +651,159 @@ const hideUserInterface = () => {
     instructionsElement.classList.add('d-none');
     answersFormElement.classList.add('d-none');
 }
+
+
+
+
+
+
+const showResults =  (correctGuesses, wrongGuesses) => {
+    
+    if (combinationType.value !== 'colors') {
+        let resultsMSG = "";
+        if (correctGuesses.length === 0) {
+            resultsMSG = `<h5 class="mb-3">Non hai ricordato niente!</h5>
+                <p class="mb-0">Gli elementi che hai inserito sono: <span id="wrongGuessesElement">${showElementsString(wrongGuesses, "wrongGuessesElement")}</span></p>
+                <p class="mb-0">La combinazione da ricordare era: <span id="originalCombinationElement">${showElementsString(combination, "originalCombinationElement")}</span></p>
+            `;
+        } else if (correctGuesses.length === combination.length) {
+            resultsMSG = `<h5 class="mb-3">Hai ricordato tutto!</h5>
+                <p class="mb-0">La combinazione da ricordare era: <span id="originalCombinationElement">${showElementsString(combination, "originalCombinationElement")}</span></p>
+            `;
+        } else {
+            resultsMSG = `<h5 class="mb-3">Hai ricordato ${correctGuesses.length} elementi su ${combination.length}</h5>
+                <p class="mb-0">Gli elementi che hai indovinato sono: <span id="correctGuessesElement">${showElementsString(correctGuesses, "correctGuessesElement")}</span></p>
+                <p class="mb-0">Gli elementi che hai sbagliato sono: <span id="wrongGuessesElement">${showElementsString(wrongGuesses, "wrongGuessesElement")}</span></p>
+                <p class="mb-0">La combinazione da ricordare era: <span id="originalCombinationElement">${showElementsString(combination, "originalCombinationElement")}</span></p>
+            `;
+        };
+        resultsElement.innerHTML = resultsMSG;
+    } else {
+        if (correctGuesses.length === 0) {
+            resultsMSG = `<h5 class="mb-3">Non hai ricordato niente!</h5>
+                <p class="mb-2 d-flex align-items-center">Gli elementi che hai inserito sono: <span class="d-flex align-items-center" id="wrongGuessesElement"></span></p>
+                <p class="mb-0 d-flex align-items-center">La combinazione da ricordare era: <span class="d-flex align-items-center" id="originalCombinationElement"></span></p>
+            `;
+            resultsElement.innerHTML = resultsMSG;
+            showElementsString(wrongGuesses, "wrongGuessesElement");
+            showElementsString(combination, "originalCombinationElement");
+        } else if (correctGuesses.length === combination.length) {
+            resultsMSG = `<h5 class="mb-3">Hai ricordato tutto!</h5>
+                <p class="mb-0 d-flex align-items-center">La combinazione da ricordare era: <span class="d-flex align-items-center" id="originalCombinationElement"></span></p>
+            `;
+            showElementsString(combination, "originalCombinationElement");
+            resultsElement.innerHTML = resultsMSG;
+        } else {
+            resultsMSG = `<h5 class="mb-3">Hai ricordato ${correctGuesses.length} elementi su ${combination.length}</h5>
+                <p class="mb-2 d-flex align-items-center">Gli elementi che hai indovinato sono: <span class="d-flex align-items-center" id="correctGuessesElement"></span></p>
+                <p class="mb-2 d-flex align-items-center">Gli elementi che hai sbagliato sono: <span class="d-flex align-items-center" id="wrongGuessesElement"></span></p>
+                <p class="mb-0 d-flex align-items-center">La combinazione da ricordare era: <span class="d-flex align-items-center" id="originalCombinationElement"></span></p>
+            `;
+            resultsElement.innerHTML = resultsMSG;
+            showElementsString(correctGuesses, "correctGuessesElement");
+            showElementsString(wrongGuesses, "wrongGuessesElement");
+            showElementsString(combination, "originalCombinationElement");
+        };
+    };
+
+
+    if (correctGuesses.length === 0) {
+        resultsElement.classList.add('bg-danger', 'text-bg-danger');
+    } else if (correctGuesses.length === combination.length) {
+        resultsElement.classList.add('bg-success', 'text-bg-success');
+    } else {
+        resultsElement.classList.add('bg-success-subtle');
+    };
+
+
+    const restartButton = document.createElement('button');
+    restartButton.className = 'btn btn-primary mt-2 d-block mx-auto';
+    restartButton.innerText = 'Nuova partita';
+    restartButton.addEventListener('click', function() {
+        resetGameData();
+        startGame();
+    });
+    const backButton = document.createElement('button');
+    backButton.className = 'btn btn-light mt-2 d-block mx-auto';
+    backButton.innerText = 'Torna alla schermata principale';
+    backButton.addEventListener('click', function() {
+        resetGameData();
+        showPageElements();
+        hideGameScreen();
+    });
+
+    resultsElement.appendChild(restartButton);
+    resultsElement.appendChild(backButton);
+    resultsElement.classList.remove('d-none');
+};
+
+const showElementsString =  (elementsToShow, parentID) => {
+    console.debug("elementsToShow", elementsToShow);
+    console.debug("parentID", parentID);
+
+    if (combinationType.value !== 'colors') {
+        return elementsToShow.join(", ");
+    } else {
+        // Elemento HTML in cui appendere gli elementi
+        const parentElement = document.getElementById(parentID);
+
+        elementsToShow.forEach(element => {
+            const elementContainer = document.createElement('span');
+            elementContainer.className = 'resultElementContainer border me-1';
+            elementContainer.innerHTML = `
+            <div class="h-100 border" style="background-color: ${element}">
+            </div>
+            `
+            parentElement.appendChild(elementContainer);
+        });
+        // return;
+    };
+};
+
+
+
+/**
+ * Funzione che resetta l'interfaccia per la risposta dell'utente
+ * Rimuove i blocchi contenenti la combinazione da ricordare
+ * Mostra il blocco contenente il countdown
+ * Mostra il blocco contenente le istruzioni di gioco per l'utente
+ * Mostra il blocco che conterrà i nuovi numeri generati
+ */
+const resetUserInterface = () => {
+    combinationListElement.innerHTML = '';
+    countdownElement.classList.remove('d-none');
+    instructionsElement.classList.remove('d-none');
+    combinationListElement.classList.remove('d-none');
+};
+
+
+
+/**
+ * Funzione che rimuove gli input per l'inserimento dei valori da parte dell'utente
+ */
+const resetUserValues = () => {
+    if (!colorsOptions.classList.contains('d-none')) {
+        colorsOptions.classList.add('d-none');
+        colorsOptions.innerHTML = "";
+    }
+        
+    answersInputGroupElement.innerHTML = ""; 
+};
+
+
+
+/**
+ * Funzione che nasconde il blocco contenente i risultati e cancella le classi per lo stile presenti
+ */
+const resetResultsElement = () => {
+    resultsElement.classList.add('d-none');
+    if (resultsElement.classList.contains('bg-danger')) {
+        resultsElement.classList.remove('bg-danger');
+        resultsElement.classList.remove('text-bg-danger');
+    };
+    if (resultsElement.classList.contains('bg-success')) {
+        resultsElement.classList.remove('bg-success');
+        resultsElement.classList.remove('text-bg-success');
+    };
+    if (resultsElement.classList.contains('bg-success-subtle')) resultsElement.classList.remove('bg-success-subtle');
+};
