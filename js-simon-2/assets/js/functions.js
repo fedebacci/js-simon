@@ -807,3 +807,35 @@ const resetResultsElement = () => {
     };
     if (resultsElement.classList.contains('bg-success-subtle')) resultsElement.classList.remove('bg-success-subtle');
 };
+
+
+
+/**
+ * Funzione che riceve il nome della difficoltà attualmente selezionata dall'utente e ne mostra in pagina i dettagli come n° di elementi da ricordare, range dei numeri generati e tempo a disposizione convertito in secondi 
+ */
+const describeDifficulty = () => {
+    difficultyDescriptionElement.innerHTML = `
+        <p class="mb-2 fw-bolder">
+            Difficoltà selezionata: ${difficulty.name}
+        </p>
+        <p class="mb-2">
+            Lunghezza della combinazione da ricordare: ${difficulty.combinationLength}
+        </p>
+        <p class="mb-2">
+            Opzioni possibili: ${difficulty.possibleOptions}
+        </p>
+        <p class="mb-0">
+            Tempo a disposizione: ${difficulty.time / 1000} secondi
+        </p>
+    `;
+}
+
+
+
+
+/**
+ * Funzione che descrive il tipo di gioco scelto
+ */
+const describeCombinationType = () => {
+    combinationTypeDescription.innerText = combinationType.description;
+}

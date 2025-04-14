@@ -53,14 +53,15 @@ confirmButton.addEventListener('click', function(e) {
 });
 selectCombinationTypeElement.addEventListener('change', function(e) {
     combinationType = getCombinationType(e.target.value);
-    difficulty = getDifficulty(selectDifficultyElement.value);
+    describeCombinationType();
     removeDifficultyOptions();
-    // describeCombinationType();
     showDifficultyOptions();
+    difficulty = getDifficulty(selectDifficultyElement.value);
+    describeDifficulty();
 });
 selectDifficultyElement.addEventListener('change', function(e) {
     difficulty = getDifficulty(e.target.value);
-    // describeDifficulty();
+    describeDifficulty();
 });
 
 
@@ -68,7 +69,7 @@ selectDifficultyElement.addEventListener('change', function(e) {
 // # FUNZIONI INIZIALI
 showCombinationTypesOptions();
 combinationType = getCombinationType(selectCombinationTypeElement.value);
-// describeCombinationType();
+describeCombinationType();
 showDifficultyOptions();
 difficulty = getDifficulty(selectDifficultyElement.value);
-// describeDifficulty();
+describeDifficulty();

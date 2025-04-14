@@ -12,16 +12,19 @@ const combinationTypes = [
     {
         name: 'Numeri',
         value: 'numbers',
+        description: "Ricorda una combinazione di numeri compresi tra 0 e il numero di opzioni possibili (che varia a seconda della difficoltà)",
         options: [],
     },
     {
         name: 'Lettere',
         value: 'letters',
+        description: "Ricorda una combinazione di lettere. A seconda della difficoltà aumenta il numero di lettere da ricordare e puoi trovare parte dell'alfabeto in minuscolo, tutto l'alfabeto in minuscolo oppure tutto l'alfabeto sia in minuscolo che in maiuscolo",
         options: 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
     },
     {
         name: 'Colori',
         value: 'colors',
+        description: "Ricorda una combinazione di colori. A seconda della difficoltà aumenta il numero di colori da ricordare e aumentano i colori possibili all'interno della combinazione",
         options: [
             '#8b0000',      // darkred       rgb(139, 0, 0)
             '#cd5c5c',      // indianred     rgb(205, 92, 92)
